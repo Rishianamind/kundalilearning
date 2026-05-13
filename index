@@ -1,0 +1,1297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kal Purush Kundali — interactive Vedic chart learning tool</title>
+<meta name="description" content="Visualize how a native's kundali overlays on the Kal Purush blueprint. Interactive Vedic astrology learning tool with drishti, dispositor chains, and Bhavat Bhavam.">
+
+<!-- Open Graph -->
+<meta property="og:title" content="Kal Purush Kundali — interactive Vedic chart">
+<meta property="og:description" content="See how your kundali maps onto the cosmic blueprint. Learn drishti, dispositors, karakas, yogas, and Bhavat Bhavam interactively.">
+<meta property="og:type" content="website">
+
+<style>
+  /* Base theme tokens — replicating what the Claude host provides */
+  :root {
+    --color-background-primary: #ffffff;
+    --color-background-secondary: #f5f4ef;
+    --color-text-primary: #1a1a1a;
+    --color-text-secondary: #555555;
+    --color-text-tertiary: #888888;
+    --color-text-info: #2867b2;
+    --color-border-secondary: #d4d2c8;
+    --color-border-tertiary: #e8e6dd;
+    --border-radius-md: 8px;
+    --border-radius-lg: 12px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-background-primary: #1a1a1a;
+      --color-background-secondary: #232323;
+      --color-text-primary: #ececec;
+      --color-text-secondary: #b4b4b4;
+      --color-text-tertiary: #8a8a8a;
+      --color-text-info: #8ab4f8;
+      --color-border-secondary: #3a3a3a;
+      --color-border-tertiary: #2a2a2a;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--color-background-primary);
+    color: var(--color-text-primary);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+
+  .page-wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px 20px 60px;
+  }
+
+  .page-header {
+    margin: 8px 0 24px;
+  }
+  .page-header h1 {
+    font-size: 24px;
+    font-weight: 500;
+    margin: 0 0 6px;
+    color: var(--color-text-primary);
+  }
+  .page-header p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--color-text-secondary);
+    line-height: 1.55;
+    max-width: 720px;
+  }
+  .instructions {
+    margin: 18px 0 22px;
+    padding: 16px 18px;
+    background: var(--color-background-secondary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-lg);
+  }
+  .instructions-title {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin: 0 0 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .instructions-toggle {
+    background: transparent;
+    border: 0.5px solid var(--color-border-secondary);
+    color: var(--color-text-secondary);
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+  .instructions-toggle:hover { color: var(--color-text-primary); }
+  .instructions-body { display: grid; grid-template-columns: 1fr; gap: 10px; }
+  @media (min-width: 720px) { .instructions-body { grid-template-columns: 1fr 1fr; gap: 10px 22px; } }
+  .instruction-step {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 13px;
+    color: var(--color-text-primary);
+    line-height: 1.5;
+  }
+  .instruction-step .num {
+    flex-shrink: 0;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: #534AB7;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+  .instruction-step .text { flex: 1; }
+  .instruction-step .text b { font-weight: 500; }
+  .instruction-step .text .sub {
+    display: block;
+    margin-top: 2px;
+    color: var(--color-text-secondary);
+    font-size: 12px;
+  }
+  .instructions-tip {
+    margin-top: 12px;
+    padding: 8px 12px;
+    background: rgba(83, 74, 183, 0.06);
+    border-left: 2.5px solid #534AB7;
+    border-radius: 4px;
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    line-height: 1.55;
+  }
+  .instructions-tip b { color: var(--color-text-primary); font-weight: 500; }
+  .instructions.collapsed .instructions-body,
+  .instructions.collapsed .instructions-tip { display: none; }
+
+  .page-footer {
+    margin: 50px 0 0;
+    padding: 18px 0;
+    border-top: 0.5px solid var(--color-border-tertiary);
+    font-size: 12px;
+    color: var(--color-text-tertiary);
+    text-align: center;
+    line-height: 1.6;
+  }
+  .page-footer a {
+    color: var(--color-text-secondary);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0,0,0,0);
+    border: 0;
+  }
+
+  /* === Widget styles === */
+  .kw-wrap { padding: 0.5rem 0; }
+  .kw-controls { display:flex; gap:14px; align-items:center; flex-wrap:wrap; margin: 0 0 12px; font-size:13px; color: var(--color-text-secondary); }
+  .kw-controls label { display:flex; align-items:center; gap:8px; }
+  .kw-controls select { padding:6px 10px; border-radius:var(--border-radius-md); border:0.5px solid var(--color-border-secondary); background:var(--color-background-primary); color:var(--color-text-primary); font-size:13px; font-family: inherit; }
+  .seg-group { display:inline-flex; gap:0; padding:3px; background:var(--color-background-secondary); border-radius:var(--border-radius-md); border: 0.5px solid var(--color-border-tertiary); }
+  .seg-group button { background:transparent; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:500; color:var(--color-text-secondary); transition: all 0.15s; font-family: inherit; }
+  .seg-group button:hover:not(.active) { color:var(--color-text-primary); background: rgba(0,0,0,0.04); }
+  .seg-group button.active { background:#534AB7 !important; color:#FFFFFF !important; }
+  .planet-bar { background: var(--color-background-secondary); padding: 10px 12px; border-radius: var(--border-radius-md); margin-bottom: 14px; }
+  .planet-bar .pb-title { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 8px; display:flex; align-items:center; justify-content:space-between; gap: 8px; flex-wrap:wrap; }
+  .pb-actions { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  .pb-actions > button { font-size:11px; padding:6px 10px; border-radius:6px; background:transparent; border:0.5px solid var(--color-border-secondary); color:var(--color-text-secondary); cursor:pointer; font-family: inherit; }
+  .pb-actions .label { font-size:11px; color:var(--color-text-tertiary); }
+  .planet-chips { display:flex; flex-wrap:wrap; gap:6px; }
+  .planet-chip { display:inline-flex; align-items:center; gap:4px; padding: 4px 10px; border-radius:14px; font-size: 12px; font-weight: 500; cursor: pointer; user-select:none; background: var(--color-background-primary); border: 0.5px solid var(--color-border-secondary); color: var(--color-text-primary); }
+  .planet-chip.placed { opacity: 0.4; }
+  .planet-chip.active { background: #534AB7; color: #FFFFFF; border-color: #534AB7; }
+  .pb-hint { font-size: 11px; color: var(--color-text-tertiary); margin-top: 6px; }
+  .view-tabs { display:inline-flex; gap:0; padding:3px; background:var(--color-background-secondary); border-radius:var(--border-radius-md); border: 0.5px solid var(--color-border-tertiary); margin-bottom: 12px; flex-wrap:wrap; }
+  .view-tabs button { background:transparent; border:none; padding:7px 14px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:500; color:var(--color-text-secondary); transition: all 0.15s; display:inline-flex; align-items:center; gap:6px; font-family: inherit; }
+  .view-tabs button:hover:not(.active) { color:var(--color-text-primary); background: rgba(0,0,0,0.04); }
+  .view-tabs button.active { background:#534AB7 !important; color:#FFFFFF !important; }
+  .view-tabs .dot { width:6px; height:6px; border-radius:50%; background: currentColor; opacity:0.7; }
+  .bb-banner { background: rgba(186, 117, 23, 0.08); border: 0.5px solid rgba(186, 117, 23, 0.35); border-radius: var(--border-radius-md); padding: 10px 14px; margin-bottom: 12px; font-size: 12.5px; color: var(--color-text-primary); display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .bb-banner b { font-weight: 500; }
+  .bb-banner .bb-pill { display:inline-flex; align-items:center; gap:5px; padding: 2px 9px; border-radius: 8px; background: #FAC775; color: #412402; font-size: 11.5px; font-weight: 500; }
+  .bb-banner .bb-exit { margin-left:auto; padding: 4px 10px; border-radius: 6px; background: transparent; border: 0.5px solid var(--color-border-secondary); font-size: 11px; cursor:pointer; color: var(--color-text-secondary); font-family: inherit; }
+  .kw-grid { display:grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: stretch; }
+  .chart-cell { display:flex; flex-direction:column; min-width: 0; width: 100%; }
+  .kw-chart-label { font-size:12px; color:var(--color-text-secondary); text-align:center; margin: 4px 0 6px; }
+  .chart-frame { position: relative; width: 100%; padding-bottom: 100%; box-sizing: border-box; }
+  svg.kundali { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display:block; }
+  .seg-fill { transition: fill 0.25s; cursor:pointer; }
+  .seg-fill:hover { filter: brightness(0.96); }
+  .seg-fill.highlight { stroke: var(--color-text-primary); stroke-width: 1.6; }
+  .seg-fill.aspect-target { fill: rgba(216, 90, 48, 0.10) !important; }
+  .seg-fill.aspect-source { fill: rgba(216, 90, 48, 0.18) !important; }
+  .seg-fill.chain-house { fill: rgba(83, 74, 183, 0.13) !important; }
+  .seg-fill.bb-base { stroke: #BA7517 !important; stroke-width: 2 !important; }
+  .sign-name { font-size:11px; font-weight:500; pointer-events:none; }
+  .house-num { font-size:11px; font-weight:500; pointer-events:none; }
+  .bb-house-num { font-size:10px; font-weight:500; pointer-events:none; fill: #BA7517; }
+  .kw-legend { display:flex; gap:14px; row-gap:8px; font-size:12px; color:var(--color-text-secondary); margin: 12px 0 18px; flex-wrap:wrap; align-items:center; }
+  .leg-item { display:inline-flex; align-items:center; gap:6px; }
+  .leg-badge { display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:50%; font-size:11px; font-weight:500; }
+  .leg-line { display:inline-block; width:24px; height:2px; vertical-align:middle; margin-right:4px; }
+  .leg-step { display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:50%; background:#534AB7; color:#fff; font-size:10px; font-weight:500; }
+  .reading { display:grid; grid-template-columns: 1fr; gap: 12px; }
+  @media (min-width: 720px) { .reading { grid-template-columns: 1fr 1.2fr 1fr; } }
+  .panel { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 16px 18px; min-width: 0; }
+  .panel.center { background: var(--color-background-secondary); border: none; }
+  .panel h3 { margin: 0 0 6px; font-size: 12px; font-weight: 500; color: var(--color-text-secondary); }
+  .panel .titleline { font-size: 16px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 10px; line-height: 1.35; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .panel ul { margin: 6px 0 0; padding-left: 18px; font-size: 13.5px; color: var(--color-text-primary); line-height: 1.7; }
+  .panel ul li { margin: 2px 0; }
+  .panel .meta { font-size: 12.5px; color: var(--color-text-secondary); margin-top: 10px; line-height: 1.6; }
+  .panel .meta b { color: var(--color-text-primary); font-weight: 500; }
+  .pill { display:inline-block; padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 500; }
+  .blend-headline { font-size: 14px; color: var(--color-text-primary); margin: 4px 0 10px; line-height: 1.65; }
+  .blend-headline b { font-weight: 500; }
+  .keywords { display:flex; flex-wrap:wrap; gap: 5px; margin: 8px 0 0; }
+  .kw-chip { font-size: 12px; padding: 3px 9px; border-radius: 8px; background: var(--color-background-secondary); color: var(--color-text-primary); }
+  .panel.center .kw-chip { background: var(--color-background-primary); }
+  .section-title { font-size: 12px; color: var(--color-text-secondary); margin: 16px 0 8px; padding-top: 14px; border-top: 0.5px solid var(--color-border-tertiary); }
+  .planet-row { display:flex; align-items:flex-start; gap:10px; padding: 10px 0; }
+  .planet-row + .planet-row { border-top: 0.5px solid var(--color-border-tertiary); }
+  .planet-row .pl-name-col { display: flex; flex-direction: column; gap: 6px; min-width: 96px; max-width: 110px; }
+  .planet-row .pl-name { font-weight:500; color: var(--color-text-primary); font-size: 13.5px; display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+  .planet-row .pl-state-row { display:flex; flex-wrap:wrap; gap:4px; }
+  .planet-row .pl-content { flex: 1; min-width: 0; }
+  .planet-row .pl-text { color: var(--color-text-primary); line-height: 1.6; font-size: 12.5px; margin-top: 6px; }
+  .pl-strength { display:inline-flex; align-items:center; gap:6px; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 10px; }
+  .strength-own { background:#9FE1CB; color:#04342C; }
+  .strength-exalt { background:#C0DD97; color:#173404; }
+  .strength-debil { background:#F7C1C1; color:#501313; }
+  .strength-mooltri { background:#FAC775; color:#412402; }
+  .strength-friend { background:#B5D4F4; color:#042C53; }
+  .strength-neutral { background:#D3D1C7; color:#2C2C2A; }
+  .strength-enemy { background:#F5C4B3; color:#4A1B0C; }
+  .state-pill { display:inline-flex; align-items:center; gap:4px; font-size: 10.5px; font-weight: 500; padding: 2px 7px; border-radius: 8px; cursor: pointer; user-select: none; }
+  .state-pill.combust { background: #FAEEDA; color: #633806; border: 0.5px solid #EF9F27; }
+  .state-pill.retro { background: #EEEDFE; color: #26215C; border: 0.5px solid #7F77DD; }
+  .state-pill.combust.off, .state-pill.retro.off { background: transparent; color: var(--color-text-tertiary); border: 0.5px dashed var(--color-border-secondary); }
+  .state-pill:hover { filter: brightness(0.96); }
+  .inline-badge { display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:50%; font-size:11px; font-weight:500; }
+  .aspect-line { font-size: 12.5px; color: var(--color-text-primary); padding: 6px 0; border-top: 0.5px dashed var(--color-border-tertiary); line-height: 1.55; }
+  .aspect-line:first-of-type { border-top: none; }
+  .aspect-line .planet-tag { display:inline-flex; align-items:center; justify-content:center; min-width:24px; height:20px; padding: 0 6px; border-radius:6px; font-size:11px; font-weight:500; margin-right:6px; vertical-align: middle; color:#fff; }
+  .aspect-direction { font-size: 10.5px; padding: 1px 6px; border-radius: 5px; background: var(--color-background-secondary); color: var(--color-text-secondary); margin-right: 6px; font-weight: 500; }
+  .chain-block { padding: 10px 0; font-size: 13px; color: var(--color-text-primary); line-height: 1.6; }
+  .chain-block + .chain-block { border-top: 0.5px solid var(--color-border-tertiary); }
+  .chain-flow { display:flex; align-items:center; flex-wrap:wrap; gap:6px; margin: 6px 0 4px; }
+  .chain-step { display:inline-flex; align-items:center; gap:5px; padding: 4px 8px; border-radius: 8px; background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); font-size: 12px; }
+  .chain-step.anchor { background: #E1F5EE; border-color: #5DCAA5; color: #04342C; }
+  .chain-arrow { color: var(--color-text-tertiary); font-size: 14px; }
+  .chain-meta { font-size: 12px; color: var(--color-text-secondary); margin-top: 4px; }
+  .chain-meta b { color: var(--color-text-primary); font-weight: 500; }
+  .karaka-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 10px 12px; margin-top: 10px; font-size: 12.5px; line-height: 1.55; }
+  .karaka-card .kk-row { display:flex; gap:8px; padding: 4px 0; align-items:flex-start; }
+  .karaka-card .kk-row + .kk-row { border-top: 0.5px solid var(--color-border-tertiary); }
+  .karaka-card .kk-name { font-weight:500; color: var(--color-text-primary); display:inline-flex; align-items:center; gap:5px; min-width: 96px; }
+  .karaka-card .kk-text { color: var(--color-text-secondary); flex: 1; }
+  .karaka-card .kk-text b { color: var(--color-text-primary); font-weight:500; }
+  .conj-block { background: rgba(83, 74, 183, 0.06); border: 0.5px solid rgba(83, 74, 183, 0.25); border-radius: var(--border-radius-md); padding: 8px 12px; margin-top: 8px; font-size: 12.5px; line-height: 1.55; }
+  .conj-block + .conj-block { margin-top: 6px; }
+  .conj-block .cb-title { display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-weight:500; color: var(--color-text-primary); }
+  .conj-block .cb-yoga { font-size: 11px; padding: 2px 8px; border-radius: 8px; background: #FAC775; color: #412402; font-weight: 500; }
+  .conj-block .cb-meta { font-size: 12px; color: var(--color-text-secondary); margin-top: 4px; }
+  .p2p-pair { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+  .p2p-vs { font-size: 12px; color: var(--color-text-tertiary); }
+  .derive-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; margin-top: 10px; }
+  .derive-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 8px 10px; cursor:pointer; transition: background 0.15s; }
+  .derive-card:hover { background: var(--color-background-secondary); }
+  .derive-card .dc-label { font-size: 11.5px; color: var(--color-text-secondary); }
+  .derive-card .dc-target { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin: 3px 0 2px; }
+  .derive-card .dc-math { font-size: 11px; color: var(--color-text-tertiary); }
+  .state-note { font-size: 12px; color: var(--color-text-secondary); margin-top: 4px; padding-left: 4px; border-left: 2px solid #EF9F27; padding-block: 2px; }
+  .state-note.retro { border-left-color: #7F77DD; }
+  .state-note b { color: var(--color-text-primary); font-weight: 500; }
+</style>
+</head>
+<body>
+
+<h2 class="sr-only">Vedic kundali with corrected Rahu and Ketu dignities.</h2>
+
+<div class="page-wrap">
+
+  <header class="page-header">
+    <h1>Kal Purush Kundali</h1>
+    <p>An interactive Vedic astrology learning tool. See how a native's kundali overlays on the Kal Purush blueprint — the cosmic chart where Aries naturally rules H1, Taurus H2, and so on. Pick a lagna, place planets in houses, and watch the chart explain itself.</p>
+  </header>
+
+  <div class="instructions" id="instructions">
+    <div class="instructions-title">
+      <span>How to use</span>
+      <button class="instructions-toggle" id="instructionsToggle" aria-expanded="true">Hide</button>
+    </div>
+    <div class="instructions-body">
+      <div class="instruction-step">
+        <span class="num">1</span>
+        <span class="text">
+          <b>Pick your lagna</b> from the dropdown.
+          <span class="sub">The native chart rotates so that sign sits in H1. The Kal Purush chart stays fixed with Aries in H1.</span>
+        </span>
+      </div>
+      <div class="instruction-step">
+        <span class="num">2</span>
+        <span class="text">
+          <b>Place planets</b> — click a planet chip, then click a house on the native chart.
+          <span class="sub">Rahu and Ketu place as a 180° axis. Click a placed planet to remove it.</span>
+        </span>
+      </div>
+      <div class="instruction-step">
+        <span class="num">3</span>
+        <span class="text">
+          <b>Click any house</b> to read it.
+          <span class="sub">The center panel explains the house through its natural sign (Kal Purush) and its actual sign (your lagna).</span>
+        </span>
+      </div>
+      <div class="instruction-step">
+        <span class="num">4</span>
+        <span class="text">
+          <b>Switch views</b> with the tabs.
+          <span class="sub"><b>Drishti</b> = aspects. <b>Dispositor chain</b> = each planet's sign-lord journey. <b>Bhavat Bhavam</b> = read any house as the new 1st.</span>
+        </span>
+      </div>
+      <div class="instruction-step">
+        <span class="num">5</span>
+        <span class="text">
+          <b>Toggle C and R</b> on placed planets.
+          <span class="sub">Mark a planet combust or retrograde to study how it changes the reading. Pills appear below each planet name in the panel.</span>
+        </span>
+      </div>
+      <div class="instruction-step">
+        <span class="num">6</span>
+        <span class="text">
+          <b>Watch the badges</b> on placed planets.
+          <span class="sub">↑ Exalted &nbsp;·&nbsp; ★ Mooltrikona &nbsp;·&nbsp; ⌂ Own sign &nbsp;·&nbsp; ↓ Debilitated &nbsp;·&nbsp; C Combust &nbsp;·&nbsp; R Retrograde</span>
+        </span>
+      </div>
+    </div>
+    <div class="instructions-tip">
+      <b>Tip:</b> In Bhavat Bhavam mode, pick H7 as the base and click any house — you'll see what that house means for your spouse. The "Common readings" cards show classical interpretations like "10th from 7th = spouse's career."
+    </div>
+  </div>
+
+  <div class="kw-wrap">
+    <div class="kw-controls">
+      <label>Lagna <select id="ascSelect"></select></label>
+      <div>
+        <span class="pb-actions label" style="margin-right:6px;">Chart style:</span>
+        <div class="seg-group" id="chartStyle" role="tablist">
+          <button data-mode="north">North Indian</button>
+          <button data-mode="south" class="active">South Indian</button>
+        </div>
+      </div>
+    </div>
+    <div class="planet-bar">
+      <div class="pb-title"><span>Click a planet, then click a house. Toggle <b>C</b> (combust) or <b>R</b> (retrograde) on any placed planet to study these states.</span><div class="pb-actions"><button id="clearPlanets">Clear all</button></div></div>
+      <div class="planet-chips" id="planetChips"></div>
+      <div class="pb-hint" id="pbHint">No planet selected.</div>
+    </div>
+    <div class="view-tabs" role="tablist" id="viewTabs">
+      <button data-view="drishti" class="active"><span class="dot"></span>Drishti view</button>
+      <button data-view="dispositor"><span class="dot"></span>Dispositor chain</button>
+      <button data-view="bhavat"><span class="dot"></span>Bhavat Bhavam</button>
+    </div>
+    <div id="drishtiSubControls" class="planet-bar" style="padding:8px 12px;">
+      <div class="pb-title" style="margin-bottom: 0;"><span class="pb-actions label">Drishti display:</span>
+        <div class="seg-group" id="drishtiMode" role="tablist">
+          <button data-mode="focused" class="active">Selected house</button>
+          <button data-mode="all">All</button>
+          <button data-mode="off">Off</button>
+        </div>
+      </div>
+    </div>
+    <div id="dispositorSubControls" class="planet-bar" style="padding:8px 12px; display:none;">
+      <div class="pb-title" style="margin-bottom: 0;"><span class="pb-actions label">Show chain for:</span>
+        <select id="chainTarget" style="padding:5px 10px; border-radius:var(--border-radius-md); border:0.5px solid var(--color-border-secondary); background:var(--color-background-primary); color:var(--color-text-primary); font-size:12px; font-family: inherit;"></select>
+        <span style="font-size:11px;color:var(--color-text-tertiary);">A planet's affairs travel through its sign-lord.</span>
+      </div>
+    </div>
+    <div id="bhavatSubControls" class="planet-bar" style="padding:8px 12px; display:none;">
+      <div class="pb-title" style="margin-bottom: 0;"><span class="pb-actions label">Read as if 1st house:</span>
+        <select id="bhavatBase" style="padding:5px 10px; border-radius:var(--border-radius-md); border:0.5px solid var(--color-border-secondary); background:var(--color-background-primary); color:var(--color-text-primary); font-size:12px; font-family: inherit;"></select>
+        <span style="font-size:11px;color:var(--color-text-tertiary);">House numbers reorient so the base becomes B1.</span>
+      </div>
+    </div>
+    <div id="bhavatBanner"></div>
+    <div class="kw-grid">
+      <div class="chart-cell"><div class="kw-chart-label">Kal Purush Kundali</div>
+        <div class="chart-frame"><svg class="kundali" id="kpChart" viewBox="0 0 320 320" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Kal Purush Kundali"></svg></div>
+      </div>
+      <div class="chart-cell"><div class="kw-chart-label">Native chart</div>
+        <div class="chart-frame"><svg class="kundali" id="nativeChart" viewBox="0 0 320 320" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Native Kundali"></svg></div>
+      </div>
+    </div>
+    <div class="kw-legend" id="legend"></div>
+    <div id="globalYogas"></div>
+    <div class="reading" id="reading"></div>
+  </div>
+
+  <footer class="page-footer">
+    Open-source on <a href="https://github.com/" target="_blank" rel="noopener">GitHub</a> · Built for learning, not for prediction · No birth-data required, no calculation performed — this is a teaching aid only.
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  const signs = [
+    { n:1,name:'Mesha',en:'Aries',element:'Fire',modality:'Cardinal',lord:'Mars',qualities:['Pioneering','Direct','Impulsive','Assertive'],style:'initiates with raw drive; first to act, last to deliberate'},
+    { n:2,name:'Vrishabha',en:'Taurus',element:'Earth',modality:'Fixed',lord:'Venus',qualities:['Steady','Sensual','Accumulating','Stubborn'],style:'builds slowly and holds; values comfort, resources, lasting forms'},
+    { n:3,name:'Mithuna',en:'Gemini',element:'Air',modality:'Mutable',lord:'Mercury',qualities:['Curious','Verbal','Witty','Restless'],style:'engages through words and ideas; quick, adaptable, scattered'},
+    { n:4,name:'Karka',en:'Cancer',element:'Water',modality:'Cardinal',lord:'Moon',qualities:['Nurturing','Emotional','Protective','Moody'],style:'leads from feeling and care; remembers, protects, withdraws'},
+    { n:5,name:'Simha',en:'Leo',element:'Fire',modality:'Fixed',lord:'Sun',qualities:['Proud','Creative','Generous','Self-focused'],style:'expresses with warmth; wants recognition and creative voice'},
+    { n:6,name:'Kanya',en:'Virgo',element:'Earth',modality:'Mutable',lord:'Mercury',qualities:['Analytical','Service-oriented','Critical','Precise'],style:'refines through detail and effort; serves, organizes, doubts'},
+    { n:7,name:'Tula',en:'Libra',element:'Air',modality:'Cardinal',lord:'Venus',qualities:['Diplomatic','Relational','Harmonious','Indecisive'],style:'leads through balance and partnership; weighs, charms, hesitates'},
+    { n:8,name:'Vrischika',en:'Scorpio',element:'Water',modality:'Fixed',lord:'Mars',qualities:['Intense','Probing','Secretive','Transformative'],style:'goes deep and hidden; investigates, guards, regenerates'},
+    { n:9,name:'Dhanu',en:'Sagittarius',element:'Fire',modality:'Mutable',lord:'Jupiter',qualities:['Philosophical','Optimistic','Expansive','Restless'],style:'aims for meaning and freedom; teaches, travels, overreaches'},
+    { n:10,name:'Makara',en:'Capricorn',element:'Earth',modality:'Cardinal',lord:'Saturn',qualities:['Disciplined','Ambitious','Pragmatic','Cold'],style:'climbs through structure and patience; builds reputation slowly'},
+    { n:11,name:'Kumbha',en:'Aquarius',element:'Air',modality:'Fixed',lord:'Saturn',qualities:['Reformist','Networked','Detached','Eccentric'],style:'works through groups and ideals; rational, contrarian, future-leaning'},
+    { n:12,name:'Meena',en:'Pisces',element:'Water',modality:'Mutable',lord:'Jupiter',qualities:['Compassionate','Mystical','Dissolving','Escapist'],style:'flows and surrenders; imaginative, sensitive, boundary-less'}
+  ];
+  const houses = [
+    { n:1,title:'Tanu — self & body',themes:['Body & vitality','Personality','How others see you','Self-projection'],karakas:[{p:'Su',for:'overall self, vitality, soul'}]},
+    { n:2,title:'Dhana — wealth & speech',themes:['Accumulated wealth','Family of origin','Speech','Food & values'],karakas:[{p:'Ju',for:'wealth accumulation, family'},{p:'Me',for:'speech'}]},
+    { n:3,title:'Sahaja — effort & siblings',themes:['Courage','Younger siblings','Hands & skill','Short journeys'],karakas:[{p:'Ma',for:'courage, energy, younger siblings'}]},
+    { n:4,title:'Sukha — home & mother',themes:['Mother','Home & land','Inner comfort','Vehicles'],karakas:[{p:'Mo',for:'mother, emotional comfort, mind'},{p:'Ma',for:'land, real estate'}]},
+    { n:5,title:'Putra — intellect & children',themes:['Children','Creativity','Past merits','Intelligence'],karakas:[{p:'Ju',for:'children, wisdom, past merits'}]},
+    { n:6,title:'Ari — service & enemies',themes:['Health & disease','Enemies & debts','Daily work','Service'],karakas:[{p:'Ma',for:'conflict, enemies, accidents'},{p:'Sa',for:'disease, debts, daily grind'}]},
+    { n:7,title:'Yuvati — partnership',themes:['Spouse','Business partners','Open enemies','The other'],karakas:[{p:'Ve',for:'spouse, relationships, intimacy'}]},
+    { n:8,title:'Ayur — transformation',themes:['Longevity','Hidden matters','Inheritance','Crisis & rebirth'],karakas:[{p:'Sa',for:'longevity, chronic matters'}]},
+    { n:9,title:'Dharma — fortune & father',themes:['Father','Dharma & beliefs','Higher learning','Luck & grace'],karakas:[{p:'Su',for:'father, authority figure'},{p:'Ju',for:'dharma, higher learning, grace'}]},
+    { n:10,title:'Karma — career & status',themes:['Profession','Public image','Authority','Action in world'],karakas:[{p:'Su',for:'authority, status'},{p:'Sa',for:'duty, hard work'},{p:'Me',for:'skill, commerce'},{p:'Ju',for:'recognition'}]},
+    { n:11,title:'Labha — gains & friends',themes:['Income','Friends & network','Elder siblings','Fulfilled desires'],karakas:[{p:'Ju',for:'gains, fulfilled desires'}]},
+    { n:12,title:'Vyaya — loss & moksha',themes:['Expenses','Foreign lands','Sleep & bed','Liberation'],karakas:[{p:'Sa',for:'losses, separation, isolation'},{p:'Ke',for:'moksha, liberation'}]}
+  ];
+  const bhavatPersons = {
+    1:{who:'Yourself',desc:'this is the default chart'},
+    2:{who:'Family / your wealth',desc:'derived houses describe matters of family or money'},
+    3:{who:'Younger siblings',desc:"derived houses describe your younger sibling's life"},
+    4:{who:'Mother',desc:"derived houses describe your mother's life"},
+    5:{who:'Children / first child',desc:"derived houses describe your child's life"},
+    6:{who:'Enemies / employees / pets',desc:"derived houses describe your enemy's or employee's situation"},
+    7:{who:'Spouse / partner',desc:"derived houses describe your spouse's life — career, family, health"},
+    8:{who:'In-laws / hidden matters',desc:"derived houses describe matters of the 8th body"},
+    9:{who:'Father / guru',desc:"derived houses describe your father's life"},
+    10:{who:'Career / boss',desc:'derived houses describe matters of your career or boss'},
+    11:{who:'Elder siblings / friends',desc:"derived houses describe your elder sibling's or friends' life"},
+    12:{who:'Foreign / spiritual life',desc:'derived houses describe matters of foreign lands or the hidden self'}
+  };
+  const derivativeCommonReads = {
+    7:[{offset:10,label:"Spouse's career",math:'10th from 7th'},{offset:2,label:"Spouse's wealth",math:'2nd from 7th'},{offset:7,label:"Spouse's spouse / 2nd marriage",math:'7th from 7th'},{offset:4,label:"Spouse's home",math:'4th from 7th'}],
+    4:[{offset:2,label:"Mother's wealth",math:'2nd from 4th'},{offset:7,label:"Mother's spouse (your father)",math:'7th from 4th'},{offset:10,label:"Mother's career",math:'10th from 4th'},{offset:6,label:"Mother's health",math:'6th from 4th'}],
+    9:[{offset:2,label:"Father's wealth",math:'2nd from 9th'},{offset:7,label:"Father's spouse (your mother)",math:'7th from 9th'},{offset:10,label:"Father's career",math:'10th from 9th'},{offset:6,label:"Father's health",math:'6th from 9th'}],
+    5:[{offset:10,label:"Child's career",math:'10th from 5th'},{offset:5,label:'Grandchild',math:'5th from 5th'},{offset:7,label:"Child's spouse",math:'7th from 5th'},{offset:2,label:"Child's wealth",math:'2nd from 5th'}],
+    3:[{offset:10,label:"Younger sibling's career",math:'10th from 3rd'},{offset:7,label:"Younger sibling's spouse",math:'7th from 3rd'}],
+    11:[{offset:10,label:"Elder sibling's career",math:'10th from 11th'},{offset:7,label:"Elder sibling's spouse",math:'7th from 11th'}],
+    10:[{offset:10,label:"Boss's status",math:'10th from 10th'},{offset:6,label:'Workplace conflicts',math:'6th from 10th'}],
+    6:[{offset:7,label:"Enemy's open enemies",math:'7th from 6th'},{offset:12,label:"Enemy's losses",math:'12th from 6th'}]
+  };
+  const planets = [
+    { k:'Su',name:'Sun',full:'Surya',color:'#E85D24',karaka:'Soul, father, authority, vitality',effects:['steadies and dignifies','adds ego or pride','seeks recognition there'],own:[5],mooltri:[5],mooltriHouse:null,exalt:[1],debil:[7],friends:[4,5,8,9,12],enemies:[2,7,10,11],aspects:[7],aspectFlavor:'authority and pride',canCombust:false,canRetro:false},
+    { k:'Mo',name:'Moon',full:'Chandra',color:'#7F77DD',karaka:'Mind, mother, emotions, public',effects:['softens and gives feeling','brings mood swings','tunes you to the public there'],own:[4],mooltri:[2],mooltriHouse:null,exalt:[2],debil:[8],friends:[3,5,6],enemies:[],aspects:[7],aspectFlavor:'emotional sensitivity',canCombust:true,canRetro:false},
+    { k:'Ma',name:'Mars',full:'Mangal',color:'#D85A30',karaka:'Energy, courage, siblings, conflict',effects:['energizes and sharpens','adds heat or conflict','drives action and competition'],own:[1,8],mooltri:[1],mooltriHouse:null,exalt:[10],debil:[4],friends:[1,4,5,8,9,12],enemies:[3,6],aspects:[4,7,8],aspectFlavor:'aggression and drive',canCombust:true,canRetro:true},
+    { k:'Me',name:'Mercury',full:'Budha',color:'#1D9E75',karaka:'Speech, intellect, commerce, learning',effects:['adds wit and verbal skill','brings analysis and trade','can scatter focus'],own:[3,6],mooltri:[6],mooltriHouse:null,exalt:[6],debil:[12],friends:[2,3,5,6,7,10,11],enemies:[1,4,8,12],aspects:[7],aspectFlavor:'analysis and speech',canCombust:true,canRetro:true},
+    { k:'Ju',name:'Jupiter',full:'Guru',color:'#BA7517',karaka:'Wisdom, dharma, children, husband, wealth',effects:['expands and protects','brings teaching and grace','can over-bless or inflate'],own:[9,12],mooltri:[9],mooltriHouse:null,exalt:[4],debil:[10],friends:[1,4,5,8],enemies:[3,6,7,10,11],aspects:[5,7,9],aspectFlavor:'grace and expansion',canCombust:true,canRetro:true},
+    { k:'Ve',name:'Venus',full:'Shukra',color:'#D4537E',karaka:'Love, beauty, comfort, wife, art',effects:['adds charm, beauty, ease','brings relationships and pleasure','can soften discipline'],own:[2,7],mooltri:[7],mooltriHouse:null,exalt:[12],debil:[6],friends:[2,3,6,7,10,11],enemies:[1,4,5,8,9],aspects:[7],aspectFlavor:'beauty and harmony',canCombust:true,canRetro:true},
+    { k:'Sa',name:'Saturn',full:'Shani',color:'#534AB7',karaka:'Time, discipline, work, restriction, longevity',effects:['delays and matures','brings discipline through hardship','separates and structures'],own:[10,11],mooltri:[11],mooltriHouse:null,exalt:[7],debil:[1],friends:[2,3,6,7,10,11],enemies:[1,4,5,8,9,12],aspects:[3,7,10],aspectFlavor:'discipline and constraint',canCombust:true,canRetro:true},
+    { k:'Ra',name:'Rahu',full:'Rahu',color:'#5F5E5A',karaka:'Obsession, foreign, ambition, taboo',effects:['amplifies and obsesses','brings unusual and foreign matters','creates hunger and illusion'],own:[],mooltri:[6],mooltriHouse:4,exalt:[2,3],debil:[8,9],friends:[],enemies:[],aspects:[5,7,9],aspectFlavor:'obsession and amplification',canCombust:false,canRetro:false},
+    { k:'Ke',name:'Ketu',full:'Ketu',color:'#888780',karaka:'Detachment, past lives, moksha, separation',effects:['dissolves and detaches','brings the spiritual or hidden','can cut you off from outer affairs'],own:[],mooltri:[12],mooltriHouse:10,exalt:[8,9],debil:[2,3],friends:[],enemies:[],aspects:[5,7,9],aspectFlavor:'detachment and dissolution',canCombust:false,canRetro:false}
+  ];
+  const yogaCatalogue = {
+    'Ju-Ma':{name:'Guru-Mangal Yoga',kind:'yoga',conj:'Wisdom and courage fuse — purposeful action, fighter for dharma.',mutual:'Discipline and faith aspect each other — principled drive, lawful action.'},
+    'Me-Su':{name:'Budha-Aditya Yoga',kind:'yoga',conj:'Bright intellect, sharp speech, eloquence.',mutual:'(N/A)'},
+    'Ma-Mo':{name:'Chandra-Mangal Yoga',kind:'yoga',conj:'Entrepreneurial energy, financial gain through enterprise.',mutual:'Mind and action aspect each other — strong intuition driving bold moves.'},
+    'Mo-Sa':{name:'Vish Yoga',kind:'dosha',conj:'Heavy mind, melancholy, delays. Can mature into deep wisdom.',mutual:'Saturn slows the mind — emotional restraint, lifelong responsibility.'},
+    'Ju-Mo':{name:'Gaja Kesari Yoga',kind:'yoga',conj:'Mind illuminated by wisdom — joyful, learned, dignified.',mutual:'When Jupiter is in a kendra from Moon, full Gaja Kesari fires.'},
+    'Mo-Su':{name:'Amavasya / Purnima axis',kind:'neutral',conj:'Soul-mind fusion but Moon weak.',mutual:'Full-moon axis — clarity of mind, ego/emotion tension.'},
+    'Sa-Su':{name:'Father-son tension',kind:'dosha',conj:"Father's authority weighs heavy.",mutual:'Lifelong friction between authority and discipline.'},
+    'Ma-Sa':{name:'Action vs restraint',kind:'dosha',conj:'Frustrated action — drive meets wall.',mutual:'Energy braked by discipline — slow-cooking aggression.'},
+    'Ma-Ve':{name:'Passion and intensity',kind:'yoga',conj:'Intense romance, magnetic charm.',mutual:'Desire-drive interplay — artistic intensity.'},
+    'Ju-Sa':{name:'Karma-Dharma tension',kind:'neutral',conj:'Wisdom meets restriction — sober teacher.',mutual:'Faith and structure aspect each other.'},
+    'Ju-Ve':{name:'Guru-Shukra Yoga',kind:'neutral',conj:'Both teachers together — clash of values.',mutual:'Wisdom and pleasure dialogue.'},
+    'Ra-Su':{name:'Grahan Yoga (Sun)',kind:'dosha',conj:'Solar eclipse — ego confusion, father issues.',mutual:"Ego inflated by Rahu's obsession."},
+    'Ra-Mo':{name:'Grahan Yoga (Moon)',kind:'dosha',conj:'Lunar eclipse — anxious mind, mother issues.',mutual:'Mind hypnotized — restless emotions.'},
+    'Ke-Su':{name:'Surya-Ketu axis',kind:'dosha',conj:'Soul detachment — father disconnect.',mutual:'Identity dissolves.'},
+    'Ke-Mo':{name:'Chandra-Ketu axis',kind:'dosha',conj:'Detached mind — separation from mother.',mutual:'Emotional renunciation.'}
+  };
+  const combustionNotes = {
+    Mo:'Karaka of mind weakens — emotional confusion, dependency on father/ego, mental instability.',
+    Ma:'Drive and courage scorched by ego — impulsive reaction without strategy. Sibling karaka weakens.',
+    Me:'Intellect and speech overwhelmed by ego — words land harder than intended; analytical clarity loses to identity.',
+    Ju:'Wisdom and grace consumed — over-confidence masks judgment; advice given mixes with self-importance.',
+    Ve:'Affection and harmony burn — romance becomes ego-led, taste over-asserts. Wife/partner karaka weakens.',
+    Sa:'Discipline burns out — fatherly authority overrides patient labor; restraint becomes ego-imposed rather than mature.'
+  };
+  const retroNotes = {
+    Ma:'Energy turns inward — old fights revisited, dormant courage erupts at delayed moments. Useful for revisiting projects.',
+    Me:'Communication reverses — second thoughts, contracts redone, old conversations resurface. Deep analysis but slow execution.',
+    Ju:'Wisdom turns inward — questioning of past beliefs, faith tested through introspection. Strong for self-study.',
+    Ve:'Love seeks the past — old partners return, valuations re-examined. Art and beauty turn nostalgic.',
+    Sa:'Karma replays — old responsibilities surface, deferred lessons return. Forces a redo of work and discipline.'
+  };
+
+  function planetStrength(planet, signNum, houseNum){
+    if (planet.exalt.includes(signNum)) return { tag:'Exalted', cls:'strength-exalt', key:'exalt' };
+    if (planet.debil.includes(signNum)) return { tag:'Debilitated', cls:'strength-debil', key:'debil' };
+    if (planet.mooltri.includes(signNum)) return { tag:'Mooltrikona', cls:'strength-mooltri', key:'mooltri' };
+    if (planet.mooltriHouse && houseNum === planet.mooltriHouse) return { tag:'Mooltrikona (house)', cls:'strength-mooltri', key:'mooltri' };
+    if (planet.own.includes(signNum)) return { tag:'Own sign', cls:'strength-own', key:'own' };
+    if (planet.friends.includes(signNum)) return { tag:'Friend sign', cls:'strength-friend', key:'friend' };
+    if (planet.enemies.includes(signNum)) return { tag:'Enemy sign', cls:'strength-enemy', key:'enemy' };
+    return { tag:'Neutral', cls:'strength-neutral', key:'neutral' };
+  }
+  function dignityBadge(k){
+    if (k==='exalt') return {fill:'#3B6D11',symbol:'↑',label:'Exalted'};
+    if (k==='mooltri') return {fill:'#854F0B',symbol:'★',label:'Mooltrikona'};
+    if (k==='own') return {fill:'#0F6E56',symbol:'⌂',label:'Own sign'};
+    if (k==='debil') return {fill:'#A32D2D',symbol:'↓',label:'Debilitated'};
+    return null;
+  }
+  function targetHouse(fromH, n){ return ((fromH - 1 + (n - 1)) % 12) + 1; }
+  function findPlanetBySignLord(signNum){ const ln = signs[signNum-1].lord; return planets.find(p => p.name === ln); }
+  function buildDispositorChain(planetKey, ascSign){
+    const visited = new Set(); const chain = []; let cur = planetKey;
+    while (cur && !visited.has(cur)) {
+      visited.add(cur);
+      const pl = planets.find(p => p.k === cur); if (!pl) break;
+      const h = placements[cur]; if (h === undefined) { chain.push({planet:pl, placed:false}); break; }
+      const sNum = signFromHouse(h, ascSign); const s = signs[sNum-1];
+      const st = planetStrength(pl, sNum, h);
+      const isAnchor = pl.own.includes(sNum) || pl.mooltri.includes(sNum) || pl.exalt.includes(sNum) || (pl.mooltriHouse && h === pl.mooltriHouse);
+      chain.push({planet:pl, placed:true, house:h, sign:s, strength:st, isAnchor});
+      if (isAnchor) break;
+      if (pl.k === 'Ra' || pl.k === 'Ke') break;
+      const lp = findPlanetBySignLord(sNum); if (!lp || lp.k === cur) break;
+      cur = lp.k;
+    }
+    return chain;
+  }
+  function planetToPlanetAspects(){
+    const result = []; const placed = Object.entries(placements);
+    placed.forEach(([fromK, fromH]) => {
+      const fp = planets.find(p => p.k === fromK);
+      placed.forEach(([toK, toH]) => {
+        if (fromK === toK) return;
+        if (fromH === toH) { result.push({fromK,toK,kind:'conj',n:null}); return; }
+        fp.aspects.forEach(n => { if (targetHouse(fromH, n) === toH) result.push({fromK,toK,kind:'aspect',n}); });
+      });
+    });
+    return result;
+  }
+  function getRelationsFor(pk){
+    const all = planetToPlanetAspects();
+    const outgoing=[],incoming=[],conjunctions=[];
+    all.forEach(r => {
+      if (r.kind==='conj' && r.fromK===pk) { if (!conjunctions.some(c => c.otherK===r.toK)) conjunctions.push({otherK:r.toK}); return; }
+      if (r.kind==='aspect' && r.fromK===pk) outgoing.push({toK:r.toK,n:r.n});
+      if (r.kind==='aspect' && r.toK===pk) incoming.push({fromK:r.fromK,n:r.n});
+    });
+    return {outgoing,incoming,conjunctions};
+  }
+  function isMutualAspect(p1,p2,all){
+    return all.some(r => r.kind==='aspect' && r.fromK===p1 && r.toK===p2)
+        && all.some(r => r.kind==='aspect' && r.fromK===p2 && r.toK===p1);
+  }
+  function yogaKey(a,b){ return [a,b].sort().join('-'); }
+  function detectGlobalYogas(){
+    const rels = planetToPlanetAspects(); const found=[]; const seen=new Set();
+    rels.forEach(r => {
+      const k = yogaKey(r.fromK, r.toK); const e = yogaCatalogue[k]; if (!e) return;
+      let m = r.kind==='conj' ? 'conj' : (isMutualAspect(r.fromK,r.toK,rels) ? 'mutual' : 'oneway');
+      const sk = `${k}-${m}`; if (seen.has(sk)) return; seen.add(sk);
+      if (m==='conj') found.push({k,kind:e.kind,name:e.name,summary:e.conj,parts:k.split('-'),mode:m});
+      else if (m==='mutual') found.push({k,kind:e.kind,name:e.name,summary:e.mutual,parts:k.split('-'),mode:m});
+    });
+    return found;
+  }
+  function derivedHouse(base, offset){ return ((base - 1 + offset - 1) % 12) + 1; }
+  function bhavatHouseNumber(abs, base){ return ((abs - base + 12) % 12) + 1; }
+
+  const sel = document.getElementById('ascSelect');
+  signs.forEach(s => { const o = document.createElement('option'); o.value = s.n; o.textContent = `${s.name} (${s.en})`; sel.appendChild(o); });
+  sel.value = 7;
+
+  let selectedHouse = 1, mode = 'south', placements = {}, activePlanet = null, drishtiMode = 'focused', viewMode = 'drishti', chainTarget = null, bhavatBase = 7;
+  let combust = {}, retro = {};
+
+  function placePlanet(k,h){ placements[k]=h; if (k==='Ra') placements['Ke']=((h+5)%12)+1; if (k==='Ke') placements['Ra']=((h+5)%12)+1; }
+  function removePlanet(k){
+    delete placements[k];
+    delete combust[k]; delete retro[k];
+    if (k==='Ra'||k==='Ke'){delete placements['Ra'];delete placements['Ke'];delete combust['Ra'];delete combust['Ke'];delete retro['Ra'];delete retro['Ke'];}
+    if (chainTarget===k) chainTarget=null;
+  }
+
+  const A=20,B=300,M=160,Q1=90;
+  const houseCells = {
+    1:`${Q1},${A+70} ${M},${A} ${230},${A+70} ${M},${M}`,
+    2:`${A},${A} ${Q1},${A+70} ${M},${A}`,
+    3:`${A},${A} ${Q1},${A+70} ${A+70},${Q1} ${A},${Q1-20}`,
+    4:`${A},${Q1-20} ${A+70},${Q1} ${M},${M} ${A+70},${230}`,
+    5:`${A},${230} ${A+70},${230} ${A},${B}`,
+    6:`${A},${B} ${A+70},${230} ${M},${B}`,
+    7:`${Q1},${B-70} ${M},${M} ${230},${B-70} ${M},${B}`,
+    8:`${M},${B} ${230},${B-70} ${B},${B}`,
+    9:`${B},${B} ${230},${B-70} ${B-70},${230} ${B},${230}`,
+    10:`${B},${230} ${B-70},${230} ${M},${M} ${B-70},${Q1}`,
+    11:`${B},${Q1-20} ${B-70},${Q1} ${B},${A}`,
+    12:`${B},${A} ${B-70},${Q1} ${M},${A}`
+  };
+  const houseAnchors={1:{x:160,y:60},2:{x:80,y:36},3:{x:46,y:62},4:{x:72,y:160},5:{x:46,y:258},6:{x:80,y:286},7:{x:160,y:228},8:{x:240,y:286},9:{x:276,y:258},10:{x:250,y:160},11:{x:276,y:62},12:{x:240,y:36}};
+  const planetAnchors={1:{x:160,y:100},2:{x:80,y:64},3:{x:48,y:94},4:{x:104,y:160},5:{x:48,y:226},6:{x:80,y:258},7:{x:160,y:260},8:{x:240,y:258},9:{x:276,y:226},10:{x:216,y:160},11:{x:276,y:94},12:{x:240,y:64}};
+  const houseCenters={1:{x:160,y:90},2:{x:96,y:54},3:{x:54,y:96},4:{x:90,y:160},5:{x:54,y:224},6:{x:96,y:266},7:{x:160,y:230},8:{x:224,y:266},9:{x:266,y:224},10:{x:230,y:160},11:{x:266,y:96},12:{x:224,y:54}};
+  const southSignOrder=[12,1,2,3,11,0,0,4,10,0,0,5,9,8,7,6];
+  const cellW=70,cellH=70,gridStart=20;
+  function southCellRect(idx){ const r=Math.floor(idx/4),c=idx%4; return {x:gridStart+c*cellW,y:gridStart+r*cellH,w:cellW,h:cellH}; }
+  function southHouseCenter(h, ascSign){
+    for (let i=0;i<16;i++){
+      const sn = southSignOrder[i]; if (!sn) continue;
+      if (houseFromSign(sn, ascSign) === h) { const r = southCellRect(i); return {x:r.x+r.w/2,y:r.y+r.h/2}; }
+    }
+    return {x:160,y:160};
+  }
+  function houseFromSign(sn, asc){ return ((sn - asc) % 12 + 12) % 12 + 1; }
+  function signFromHouse(h, asc){ return ((h - 1 + asc - 1) % 12) + 1; }
+  function colorForHouse(h){ const p=['#CECBF6','#9FE1CB','#F5C4B3','#F4C0D1','#D3D1C7','#B5D4F4','#C0DD97','#FAC775','#F7C1C1','#AFA9EC','#5DCAA5','#F0997B']; return p[(h-1)%12]; }
+  function elementColor(e){ return {Fire:'#F0997B',Earth:'#C0DD97',Air:'#B5D4F4',Water:'#9FE1CB'}[e]; }
+  function elementTextColor(e){ return {Fire:'#4A1B0C',Earth:'#173404',Air:'#042C53',Water:'#04342C'}[e]; }
+  function planetsInHouse(h){ return Object.entries(placements).filter(([k,v]) => v===h).map(([k])=>k); }
+  function planetTag(pk){ const pl = planets.find(p => p.k === pk); return `<span class="planet-tag" style="background:${pl.color};color:#fff;display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:18px;padding:0 5px;font-size:11px;border-radius:5px;font-weight:500;">${pl.k}</span>`; }
+
+  function renderLegend(){
+    const l = document.getElementById('legend');
+    if (viewMode === 'dispositor') {
+      l.innerHTML = `<span class="leg-item"><span class="leg-step">1</span>Step along the chain</span><span class="leg-item"><span class="leg-line" style="background:#534AB7;"></span>Disposition link</span><span class="leg-item"><span class="leg-badge" style="background:#0F6E56;color:#fff;">⌂</span>Anchor</span>`;
+    } else if (viewMode === 'bhavat') {
+      l.innerHTML = `<span class="leg-item"><span class="leg-badge" style="background:#BA7517;color:#fff;font-size:9.5px;width:18px;height:18px;">B1</span>Bhavat house number</span><span class="leg-item"><span style="display:inline-block;width:16px;height:16px;border:2px solid #BA7517;border-radius:3px;vertical-align:middle;"></span>Base house (the new 1st)</span>`;
+    } else {
+      l.innerHTML = `<span class="leg-item"><span class="leg-badge" style="background:#3B6D11;color:#fff;">↑</span>Exalted</span><span class="leg-item"><span class="leg-badge" style="background:#854F0B;color:#fff;">★</span>Mooltrikona</span><span class="leg-item"><span class="leg-badge" style="background:#0F6E56;color:#fff;">⌂</span>Own</span><span class="leg-item"><span class="leg-badge" style="background:#A32D2D;color:#fff;">↓</span>Debilitated</span><span class="leg-item"><span class="leg-badge" style="background:#EF9F27;color:#fff;font-size:10px;">C</span>Combust</span><span class="leg-item"><span class="leg-badge" style="background:#7F77DD;color:#fff;font-size:10px;">R</span>Retrograde</span>`;
+    }
+  }
+
+  function renderPlanetBar(){
+    const chips = document.getElementById('planetChips'); chips.innerHTML = '';
+    planets.forEach(p => {
+      const placed = placements[p.k] !== undefined;
+      const chip = document.createElement('span');
+      chip.className = 'planet-chip' + (placed ? ' placed' : '') + (activePlanet === p.k ? ' active' : '');
+      chip.textContent = `${p.k} ${p.name}`;
+      chip.addEventListener('click', () => {
+        if (placed) { removePlanet(p.k); activePlanet = null; }
+        else { activePlanet = (activePlanet === p.k) ? null : p.k; }
+        render();
+      });
+      chips.appendChild(chip);
+    });
+    const h = document.getElementById('pbHint');
+    if (activePlanet) {
+      const pl = planets.find(p => p.k === activePlanet);
+      const note = (pl.k === 'Ra' || pl.k === 'Ke') ? ' Ketu/Rahu placed in the opposite house.' : '';
+      h.textContent = `${pl.name} (${pl.full}) selected — click a house.${note}`;
+    } else {
+      const pc = Object.keys(placements).length;
+      h.textContent = pc ? `${pc} planet${pc===1?'':'s'} placed.` : 'No planet selected.';
+    }
+  }
+  function renderChainTargetDropdown(){
+    const dd = document.getElementById('chainTarget'); dd.innerHTML = '';
+    const oa = document.createElement('option'); oa.value='all'; oa.textContent='All planets'; dd.appendChild(oa);
+    Object.keys(placements).forEach(k => { const pl = planets.find(p=>p.k===k); const o = document.createElement('option'); o.value=k; o.textContent=`${pl.k} ${pl.name}`; dd.appendChild(o); });
+    dd.value = chainTarget || 'all';
+  }
+  function renderBhavatBaseDropdown(){
+    const dd = document.getElementById('bhavatBase'); dd.innerHTML = '';
+    for (let h=1;h<=12;h++) { const o = document.createElement('option'); o.value = h; o.textContent = `H${h} — ${bhavatPersons[h].who}`; dd.appendChild(o); }
+    dd.value = bhavatBase;
+  }
+  function renderBhavatBanner(){
+    const t = document.getElementById('bhavatBanner');
+    if (viewMode !== 'bhavat') { t.innerHTML = ''; return; }
+    const p = bhavatPersons[bhavatBase];
+    t.innerHTML = `<div class="bb-banner"><span class="bb-pill">B${bhavatBase}</span><span><b>Reading from H${bhavatBase}</b> — ${p.who}. ${p.desc}.</span><button class="bb-exit" id="bhavatExit">Reset to H1</button></div>`;
+    document.getElementById('bhavatExit').addEventListener('click', () => { bhavatBase = 1; render(); });
+  }
+
+  function getRelevantArrows(){
+    if (viewMode === 'dispositor' || viewMode === 'bhavat') return [];
+    const arrows = [];
+    Object.entries(placements).forEach(([k, fromH]) => {
+      const pl = planets.find(p => p.k === k);
+      pl.aspects.forEach(n => {
+        const toH = targetHouse(fromH, n);
+        if (toH === fromH) return;
+        const inv = (fromH === selectedHouse || toH === selectedHouse);
+        if (drishtiMode === 'off') return;
+        if (drishtiMode === 'focused' && !inv) return;
+        arrows.push({k, pl, fromH, toH, n, involvesSelected: inv});
+      });
+    });
+    return arrows;
+  }
+  function getChainLinks(asc){
+    if (viewMode !== 'dispositor') return [];
+    const tgs = (chainTarget && chainTarget !== 'all') ? [chainTarget] : Object.keys(placements);
+    const links = [];
+    tgs.forEach(k => {
+      const c = buildDispositorChain(k, asc);
+      for (let i=0;i<c.length-1;i++){ const a=c[i],b=c[i+1]; if (!a.placed||!b.placed) continue; links.push({fromKey:a.planet.k,fromH:a.house,toKey:b.planet.k,toH:b.house,stepNum:i+1}); }
+    });
+    return links;
+  }
+  function planetSlotPositions(cx, cy, n){
+    const ps = [];
+    if (n <= 1) { ps.push({x:cx,y:cy}); return ps; }
+    if (n === 2) { ps.push({x:cx-16,y:cy}); ps.push({x:cx+16,y:cy}); return ps; }
+    if (n === 3) { ps.push({x:cx-20,y:cy}); ps.push({x:cx,y:cy}); ps.push({x:cx+20,y:cy}); return ps; }
+    if (n === 4) { ps.push({x:cx-14,y:cy-10}); ps.push({x:cx+14,y:cy-10}); ps.push({x:cx-14,y:cy+10}); ps.push({x:cx+14,y:cy+10}); return ps; }
+    const cols = 3, rg = 16, cg = 22, rows = Math.ceil(n/cols);
+    for (let i=0;i<n;i++) { const c = i%cols, r = Math.floor(i/cols); ps.push({x:cx+(c-1)*cg, y:cy+(r-(rows-1)/2)*rg}); }
+    return ps;
+  }
+
+  function drawHouseShape(svg, h, fill, isNative, hlSet, chainHouses){
+    const poly = document.createElementNS('http://www.w3.org/2000/svg','polygon');
+    poly.setAttribute('points', houseCells[h]);
+    let ec = '';
+    if (isNative) {
+      if (viewMode === 'bhavat' && h === bhavatBase) {
+        ec = ' bb-base';
+      } else if (selectedHouse !== h) {
+        if (viewMode === 'drishti' && drishtiMode !== 'off' && hlSet) {
+          if (hlSet.sources.has(h)) ec = ' aspect-source';
+          else if (hlSet.targets.has(h)) ec = ' aspect-target';
+        } else if (viewMode === 'dispositor' && chainHouses && chainHouses.has(h)) {
+          ec = ' chain-house';
+        }
+      }
+    }
+    poly.setAttribute('fill', fill);
+    poly.setAttribute('stroke','var(--color-border-secondary)');
+    poly.setAttribute('stroke-width','0.6');
+    poly.setAttribute('class','seg-fill' + (selectedHouse===h?' highlight':'') + ec);
+    poly.addEventListener('click', () => {
+      if (isNative && activePlanet) { placePlanet(activePlanet, h); activePlanet = null; }
+      selectedHouse = h; render();
+    });
+    svg.appendChild(poly);
+  }
+
+  function renderPlanetGroup(svg, keys, asc, cx, cy, isSel, planetPositions){
+    const positions = planetSlotPositions(cx, cy, keys.length);
+    keys.forEach((k, idx) => {
+      const pl = planets.find(p => p.k === k);
+      const sNum = signFromHouse(placements[k], asc);
+      const s = planetStrength(pl, sNum, placements[k]);
+      const badge = dignityBadge(s.key);
+      const pos = positions[idx], px = pos.x, py = pos.y;
+      if (planetPositions) planetPositions[k] = {x:px, y:py};
+      const g = document.createElementNS('http://www.w3.org/2000/svg','g');
+      g.style.cursor = 'pointer';
+      g.addEventListener('click', (e) => { e.stopPropagation(); removePlanet(k); render(); });
+      if (badge) {
+        const r = 10;
+        const halo = document.createElementNS('http://www.w3.org/2000/svg','circle');
+        halo.setAttribute('cx',px); halo.setAttribute('cy',py); halo.setAttribute('r',r); halo.setAttribute('fill', badge.fill); halo.setAttribute('opacity','0.15'); g.appendChild(halo);
+        const ring = document.createElementNS('http://www.w3.org/2000/svg','circle');
+        ring.setAttribute('cx',px); ring.setAttribute('cy',py); ring.setAttribute('r',r-2); ring.setAttribute('fill','none'); ring.setAttribute('stroke', badge.fill); ring.setAttribute('stroke-width','1.3'); g.appendChild(ring);
+      }
+      const label = document.createElementNS('http://www.w3.org/2000/svg','text');
+      label.setAttribute('x',px); label.setAttribute('y',py+3.5);
+      label.setAttribute('text-anchor','middle'); label.setAttribute('font-size','11'); label.setAttribute('font-weight','500');
+      label.setAttribute('fill', badge ? badge.fill : pl.color);
+      label.textContent = k; g.appendChild(label);
+      if (combust[k]) {
+        const bx = px - 9, by = py - 8;
+        const bg = document.createElementNS('http://www.w3.org/2000/svg','circle');
+        bg.setAttribute('cx',bx); bg.setAttribute('cy',by); bg.setAttribute('r',5.5);
+        bg.setAttribute('fill','#EF9F27'); bg.setAttribute('stroke','var(--color-background-primary)'); bg.setAttribute('stroke-width','1'); g.appendChild(bg);
+        const sym = document.createElementNS('http://www.w3.org/2000/svg','text');
+        sym.setAttribute('x',bx); sym.setAttribute('y', by + 3); sym.setAttribute('text-anchor','middle'); sym.setAttribute('font-size','8'); sym.setAttribute('font-weight','500'); sym.setAttribute('fill','#FFFFFF');
+        sym.textContent = 'C'; g.appendChild(sym);
+      }
+      if (retro[k]) {
+        const bx = px + 9, by = py + 8;
+        const bg = document.createElementNS('http://www.w3.org/2000/svg','circle');
+        bg.setAttribute('cx',bx); bg.setAttribute('cy',by); bg.setAttribute('r',5.5);
+        bg.setAttribute('fill','#7F77DD'); bg.setAttribute('stroke','var(--color-background-primary)'); bg.setAttribute('stroke-width','1'); g.appendChild(bg);
+        const sym = document.createElementNS('http://www.w3.org/2000/svg','text');
+        sym.setAttribute('x',bx); sym.setAttribute('y', by + 3); sym.setAttribute('text-anchor','middle'); sym.setAttribute('font-size','8'); sym.setAttribute('font-weight','500'); sym.setAttribute('fill','#FFFFFF');
+        sym.textContent = 'R'; g.appendChild(sym);
+      }
+      if (badge) {
+        const bx = px+9, by = py-8;
+        const bg = document.createElementNS('http://www.w3.org/2000/svg','circle');
+        bg.setAttribute('cx',bx); bg.setAttribute('cy',by); bg.setAttribute('r',6); bg.setAttribute('fill', badge.fill); bg.setAttribute('stroke','var(--color-background-primary)'); bg.setAttribute('stroke-width','1'); g.appendChild(bg);
+        const sym = document.createElementNS('http://www.w3.org/2000/svg','text');
+        sym.setAttribute('x',bx); sym.setAttribute('y', by + (badge.symbol==='★'?2.5:3.5));
+        sym.setAttribute('text-anchor','middle'); sym.setAttribute('font-size', badge.symbol==='★'?'8.5':'9.5');
+        sym.setAttribute('font-weight','500'); sym.setAttribute('fill','#FFFFFF'); sym.textContent = badge.symbol; g.appendChild(sym);
+      }
+      const tip = document.createElementNS('http://www.w3.org/2000/svg','title');
+      let tipText = `${pl.name} in ${signs[sNum-1].name}${badge ? ' — ' + badge.label : ''}`;
+      if (combust[k]) tipText += ' · Combust';
+      if (retro[k]) tipText += ' · Retrograde';
+      tip.textContent = tipText;
+      g.appendChild(tip);
+      svg.appendChild(g);
+    });
+  }
+
+  function drawDrishtiArrow(svg, from, to, color, op, dashed, sh){
+    const dx = to.x - from.x, dy = to.y - from.y, d = Math.sqrt(dx*dx+dy*dy); if (d<1) return;
+    const ux = dx/d, uy = dy/d, sp=12, ep=12;
+    const x1 = from.x + ux*sp, y1 = from.y + uy*sp, x2 = to.x - ux*ep, y2 = to.y - uy*ep;
+    const mx = (x1+x2)/2, my = (y1+y2)/2, px = -uy, py = ux;
+    const ca = Math.min(22, d*0.15) * (sh||1), cx = mx + px*ca, cy = my + py*ca;
+    const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('d', `M ${x1} ${y1} Q ${cx} ${cy} ${x2} ${y2}`);
+    path.setAttribute('fill','none'); path.setAttribute('stroke', color);
+    path.setAttribute('stroke-width','1.8'); path.setAttribute('stroke-opacity', op);
+    path.setAttribute('stroke-linecap','round');
+    if (dashed) path.setAttribute('stroke-dasharray','4 4');
+    path.setAttribute('marker-end','url(#drishtiArrow)');
+    svg.appendChild(path);
+    return { mx: cx, my: cy };
+  }
+  function drawDrishtis(svg, getC, pp){
+    const arrows = getRelevantArrows(); if (!arrows.length) return;
+    const defs = document.createElementNS('http://www.w3.org/2000/svg','defs');
+    defs.innerHTML = `<marker id="drishtiArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker>`;
+    svg.appendChild(defs);
+    const ab = {};
+    arrows.forEach(a => { const k = `${a.fromH}->${a.toH}`; if (!ab[k]) ab[k]=[]; ab[k].push(a); });
+    Object.keys(ab).forEach(k => {
+      const gp = ab[k];
+      gp.forEach((a, i) => {
+        const fp = pp[a.k] || getC(a.fromH), tp = getC(a.toH);
+        const color = a.pl.color, op = a.involvesSelected ? 0.95 : 0.45, dashed = (a.n !== 7);
+        const off = (i - (gp.length-1)/2), sh = 1 + off*0.7;
+        const r = drawDrishtiArrow(svg, fp, tp, color, op, dashed, sh);
+        if (r && a.involvesSelected) {
+          const bg = document.createElementNS('http://www.w3.org/2000/svg','circle');
+          bg.setAttribute('cx',r.mx); bg.setAttribute('cy',r.my); bg.setAttribute('r',8.5);
+          bg.setAttribute('fill', color); bg.setAttribute('stroke','var(--color-background-primary)'); bg.setAttribute('stroke-width','1');
+          svg.appendChild(bg);
+          const t = document.createElementNS('http://www.w3.org/2000/svg','text');
+          t.setAttribute('x',r.mx); t.setAttribute('y',r.my+3); t.setAttribute('text-anchor','middle');
+          t.setAttribute('font-size','8.5'); t.setAttribute('font-weight','500'); t.setAttribute('fill','#fff');
+          t.textContent = `${a.k}·${a.n}`; svg.appendChild(t);
+        }
+      });
+    });
+  }
+  function drawChainLinks(svg, getC, pp, asc){
+    const links = getChainLinks(asc); if (!links.length) return;
+    const defs = document.createElementNS('http://www.w3.org/2000/svg','defs');
+    defs.innerHTML = `<marker id="chainArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker>`;
+    svg.appendChild(defs);
+    const lp = {};
+    links.forEach(l => { const k = `${l.fromH}->${l.toH}`; if (!lp[k]) lp[k]=[]; lp[k].push(l); });
+    Object.keys(lp).forEach(k => {
+      const gp = lp[k];
+      gp.forEach((l, i) => {
+        const fp = pp[l.fromKey] || getC(l.fromH), tp = pp[l.toKey] || getC(l.toH);
+        const dx = tp.x-fp.x, dy = tp.y-fp.y, d = Math.sqrt(dx*dx+dy*dy); if (d<1) return;
+        const ux = dx/d, uy = dy/d, sp=13, ep=13;
+        const x1 = fp.x + ux*sp, y1 = fp.y + uy*sp, x2 = tp.x - ux*ep, y2 = tp.y - uy*ep;
+        const mx = (x1+x2)/2, my = (y1+y2)/2, px = -uy, py = ux;
+        const off = (i - (gp.length-1)/2), sh = 1 + off*0.7;
+        const ca = Math.min(20, d*0.13) * sh, cx = mx + px*ca, cy = my + py*ca;
+        const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+        path.setAttribute('d', `M ${x1} ${y1} Q ${cx} ${cy} ${x2} ${y2}`);
+        path.setAttribute('fill','none'); path.setAttribute('stroke','#534AB7');
+        path.setAttribute('stroke-width','1.8'); path.setAttribute('stroke-opacity','0.85');
+        path.setAttribute('stroke-linecap','round'); path.setAttribute('marker-end','url(#chainArrow)');
+        svg.appendChild(path);
+        const bg = document.createElementNS('http://www.w3.org/2000/svg','circle');
+        bg.setAttribute('cx',cx); bg.setAttribute('cy',cy); bg.setAttribute('r',9);
+        bg.setAttribute('fill','#534AB7'); bg.setAttribute('stroke','var(--color-background-primary)'); bg.setAttribute('stroke-width','1');
+        svg.appendChild(bg);
+        const t = document.createElementNS('http://www.w3.org/2000/svg','text');
+        t.setAttribute('x',cx); t.setAttribute('y',cy+3); t.setAttribute('text-anchor','middle');
+        t.setAttribute('font-size','9.5'); t.setAttribute('font-weight','500'); t.setAttribute('fill','#fff');
+        t.textContent = l.stepNum; svg.appendChild(t);
+      });
+    });
+  }
+  function getHighlightSet(){
+    const arrows = getRelevantArrows(); const sources = new Set(), targets = new Set();
+    arrows.forEach(a => { if (a.involvesSelected){ if (a.fromH !== selectedHouse) sources.add(a.fromH); if (a.toH !== selectedHouse) targets.add(a.toH); } });
+    return {sources, targets};
+  }
+  function getChainHouses(asc){
+    const s = new Set(); if (viewMode !== 'dispositor') return s;
+    getChainLinks(asc).forEach(l => { s.add(l.fromH); s.add(l.toH); });
+    return s;
+  }
+
+  function drawNorth(svg, asc, isNative){
+    const hlSet = isNative ? getHighlightSet() : null;
+    const chainHouses = isNative ? getChainHouses(asc) : null;
+    for (let h=1;h<=12;h++){
+      const sign = signs[signFromHouse(h, asc)-1];
+      const fill = selectedHouse===h ? colorForHouse(h) : '#FFFFFF00';
+      drawHouseShape(svg, h, fill, isNative, hlSet, chainHouses);
+      const a = houseAnchors[h]; const sel = selectedHouse===h;
+      const tc = sel ? '#1a1a1a' : 'var(--color-text-primary)', sc = sel ? '#3d3d3a' : 'var(--color-text-secondary)';
+      const nm = document.createElementNS('http://www.w3.org/2000/svg','text');
+      nm.setAttribute('x',a.x); nm.setAttribute('y',a.y); nm.setAttribute('text-anchor','middle');
+      nm.setAttribute('class','sign-name'); nm.setAttribute('fill', tc); nm.textContent = sign.name; svg.appendChild(nm);
+      const hn = document.createElementNS('http://www.w3.org/2000/svg','text');
+      hn.setAttribute('x',a.x); hn.setAttribute('y',a.y+13); hn.setAttribute('text-anchor','middle');
+      hn.setAttribute('class','house-num'); hn.setAttribute('fill', sc); hn.textContent = 'H' + h; svg.appendChild(hn);
+      if (isNative && viewMode === 'bhavat') {
+        const bb = bhavatHouseNumber(h, bhavatBase);
+        const t = document.createElementNS('http://www.w3.org/2000/svg','text');
+        t.setAttribute('x',a.x); t.setAttribute('y',a.y+26); t.setAttribute('text-anchor','middle');
+        t.setAttribute('class','bb-house-num'); t.textContent = `B${bb}`;
+        svg.appendChild(t);
+      }
+    }
+    const pp = {};
+    if (isNative) {
+      for (let h=1;h<=12;h++){
+        const ph = planetsInHouse(h);
+        if (ph.length) { const pa = planetAnchors[h]; renderPlanetGroup(svg, ph, asc, pa.x, pa.y, selectedHouse===h, pp); }
+      }
+      if (viewMode === 'drishti') drawDrishtis(svg, (h) => houseCenters[h], pp);
+      else if (viewMode === 'dispositor') drawChainLinks(svg, (h) => houseCenters[h], pp, asc);
+    }
+    const frame = document.createElementNS('http://www.w3.org/2000/svg','rect');
+    frame.setAttribute('x',20); frame.setAttribute('y',20); frame.setAttribute('width',280); frame.setAttribute('height',280);
+    frame.setAttribute('fill','none'); frame.setAttribute('stroke','var(--color-text-primary)'); frame.setAttribute('stroke-width','0.8');
+    svg.appendChild(frame);
+    const d1 = document.createElementNS('http://www.w3.org/2000/svg','line');
+    d1.setAttribute('x1',20); d1.setAttribute('y1',20); d1.setAttribute('x2',300); d1.setAttribute('y2',300);
+    d1.setAttribute('stroke','var(--color-text-primary)'); d1.setAttribute('stroke-width','0.6'); svg.appendChild(d1);
+    const d2 = document.createElementNS('http://www.w3.org/2000/svg','line');
+    d2.setAttribute('x1',300); d2.setAttribute('y1',20); d2.setAttribute('x2',20); d2.setAttribute('y2',300);
+    d2.setAttribute('stroke','var(--color-text-primary)'); d2.setAttribute('stroke-width','0.6'); svg.appendChild(d2);
+  }
+
+  function drawSouth(svg, asc, isKP){
+    const hcm = {};
+    const chainHouses = !isKP ? getChainHouses(asc) : null;
+    const hlSet = !isKP ? getHighlightSet() : null;
+    for (let i=0;i<16;i++){
+      const sn = southSignOrder[i]; if (!sn) continue;
+      const r = southCellRect(i); const sign = signs[sn-1]; const h = houseFromSign(sn, asc);
+      hcm[h] = r; const sel = selectedHouse===h;
+      let fill = sel ? colorForHouse(h) : '#FFFFFF00';
+      let ec = '';
+      if (!isKP) {
+        if (viewMode === 'bhavat' && h === bhavatBase) {
+          ec = ' bb-base';
+        } else if (!sel) {
+          if (viewMode === 'drishti' && drishtiMode !== 'off' && hlSet) {
+            if (hlSet.sources.has(h)) ec = ' aspect-source';
+            else if (hlSet.targets.has(h)) ec = ' aspect-target';
+          } else if (viewMode === 'dispositor' && chainHouses && chainHouses.has(h)) {
+            ec = ' chain-house';
+          }
+        }
+      }
+      const rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
+      rect.setAttribute('x',r.x); rect.setAttribute('y',r.y); rect.setAttribute('width',r.w); rect.setAttribute('height',r.h);
+      rect.setAttribute('fill', fill);
+      rect.setAttribute('stroke','var(--color-border-secondary)'); rect.setAttribute('stroke-width','0.6');
+      rect.setAttribute('class','seg-fill' + (sel?' highlight':'') + ec);
+      rect.addEventListener('click', () => {
+        if (!isKP && activePlanet) { placePlanet(activePlanet, h); activePlanet = null; }
+        selectedHouse = h; render();
+      });
+      svg.appendChild(rect);
+      const tc = sel ? '#1a1a1a' : 'var(--color-text-primary)', sc = sel ? '#3d3d3a' : 'var(--color-text-secondary)';
+      const nm = document.createElementNS('http://www.w3.org/2000/svg','text');
+      nm.setAttribute('x', r.x+r.w/2); nm.setAttribute('y', r.y+12); nm.setAttribute('text-anchor','middle');
+      nm.setAttribute('class','sign-name'); nm.setAttribute('fill', tc); nm.textContent = sign.name; svg.appendChild(nm);
+      const hn = document.createElementNS('http://www.w3.org/2000/svg','text');
+      hn.setAttribute('x', r.x+r.w/2); hn.setAttribute('y', r.y+24); hn.setAttribute('text-anchor','middle');
+      hn.setAttribute('class','house-num'); hn.setAttribute('fill', sc); hn.textContent = 'H' + h; svg.appendChild(hn);
+      if (!isKP && viewMode === 'bhavat') {
+        const bb = bhavatHouseNumber(h, bhavatBase);
+        const t = document.createElementNS('http://www.w3.org/2000/svg','text');
+        t.setAttribute('x', r.x+r.w/2); t.setAttribute('y', r.y+36); t.setAttribute('text-anchor','middle');
+        t.setAttribute('class','bb-house-num'); t.textContent = `B${bb}`;
+        svg.appendChild(t);
+      }
+      if (h === 1) {
+        const mk = document.createElementNS('http://www.w3.org/2000/svg','text');
+        mk.setAttribute('x', r.x+r.w-5); mk.setAttribute('y', r.y+r.h-5); mk.setAttribute('text-anchor','end');
+        mk.setAttribute('font-size','9'); mk.setAttribute('font-weight','500'); mk.setAttribute('fill','var(--color-text-info)');
+        mk.textContent = 'AS'; svg.appendChild(mk);
+      }
+    }
+    const pp = {};
+    if (!isKP) {
+      for (const h of Object.keys(hcm)) {
+        const hn = parseInt(h, 10), r = hcm[hn]; const sel = selectedHouse===hn;
+        const ph = planetsInHouse(hn);
+        if (ph.length) { renderPlanetGroup(svg, ph, asc, r.x+r.w/2, r.y+r.h/2+8, sel, pp); }
+      }
+      if (viewMode === 'drishti') drawDrishtis(svg, (h) => southHouseCenter(h, asc), pp);
+      else if (viewMode === 'dispositor') drawChainLinks(svg, (h) => southHouseCenter(h, asc), pp, asc);
+    }
+    const inner = document.createElementNS('http://www.w3.org/2000/svg','rect');
+    inner.setAttribute('x',90); inner.setAttribute('y',90); inner.setAttribute('width',140); inner.setAttribute('height',140);
+    inner.setAttribute('fill','var(--color-background-secondary)'); inner.setAttribute('stroke','var(--color-border-secondary)'); inner.setAttribute('stroke-width','0.6');
+    svg.appendChild(inner);
+    const lbl = document.createElementNS('http://www.w3.org/2000/svg','text');
+    lbl.setAttribute('x',160); lbl.setAttribute('y',160); lbl.setAttribute('text-anchor','middle');
+    lbl.setAttribute('fill','var(--color-text-tertiary)'); lbl.setAttribute('font-size','12');
+    lbl.textContent = isKP ? 'Kal Purush' : 'Native'; svg.appendChild(lbl);
+  }
+
+  function renderKalPurush(){ const svg = document.getElementById('kpChart'); svg.innerHTML = ''; if (mode === 'north') drawNorth(svg, 1, false); else drawSouth(svg, 1, true); }
+  function renderNative(){ const svg = document.getElementById('nativeChart'); svg.innerHTML = ''; const asc = parseInt(sel.value, 10); if (mode === 'north') drawNorth(svg, asc, true); else drawSouth(svg, asc, false); }
+
+  function aspectsOnHouse(tgH){
+    const inc = [];
+    Object.entries(placements).forEach(([k, fromH]) => {
+      const pl = planets.find(p => p.k === k);
+      pl.aspects.forEach(n => { if (targetHouse(fromH, n) === tgH && fromH !== tgH) inc.push({planet: pl, fromH, n}); });
+    });
+    return inc;
+  }
+  function aspectsCastBy(fromH){
+    const out = [];
+    planetsInHouse(fromH).forEach(k => {
+      const pl = planets.find(p => p.k === k);
+      pl.aspects.forEach(n => { const t = targetHouse(fromH, n); if (t !== fromH) out.push({planet:pl, toH:t, n}); });
+    });
+    return out;
+  }
+
+  function renderChainPanel(asc){
+    const tgs = (chainTarget && chainTarget !== 'all') ? [chainTarget] : Object.keys(placements);
+    if (!tgs.length) return '<div class="meta" style="margin-top:14px;">Place some planets to see dispositor chains.</div>';
+    let html = '';
+    tgs.forEach(k => {
+      const c = buildDispositorChain(k, asc);
+      if (!c.length || !c[0].placed) return;
+      const sp = c[0].planet;
+      let fh = '';
+      c.forEach((s, i) => {
+        if (!s.placed) return;
+        const last = i === c.length-1, cls = (last && s.isAnchor) ? 'chain-step anchor' : 'chain-step';
+        fh += `<span class="${cls}">${planetTag(s.planet.k)}<span style="font-weight:500;">H${s.house}</span><span style="color:var(--color-text-secondary);font-size:11px;">${s.sign.name}</span></span>`;
+        if (!last) fh += '<span class="chain-arrow">→</span>';
+      });
+      const last = c[c.length-1]; let con;
+      if (last && last.isAnchor) con = `Chain ends at <b>${last.planet.name}</b> — anchored in its <b>${last.strength.tag.toLowerCase()}</b> (${last.sign.name}). The whole chain inherits some of this stability.`;
+      else if (last && last.planet && (last.planet.k === 'Ra' || last.planet.k === 'Ke')) con = `Chain reaches the lunar node <b>${last.planet.name}</b> — Rahu/Ketu have no lordships, so the chain terminates here.`;
+      else con = `Chain loops back without reaching an anchor (planets disposing each other in a circle).`;
+      html += `<div class="chain-block"><div style="font-weight:500;color:var(--color-text-primary);">${sp.name}'s journey</div><div class="chain-flow">${fh}</div><div class="chain-meta">${con}</div></div>`;
+    });
+    return html || '<div class="meta" style="margin-top:14px;">No chains to show.</div>';
+  }
+
+  function renderKarakaCard(hi, asc){
+    const house = houses[hi-1];
+    if (!house.karakas || !house.karakas.length) return '';
+    let rh = '';
+    house.karakas.forEach(kk => {
+      const pl = planets.find(p => p.k === kk.p);
+      const ph = placements[kk.p];
+      let sh;
+      if (ph === undefined) sh = `<span style="color:var(--color-text-tertiary);font-size:11.5px;">not placed</span>`;
+      else {
+        const sn = signFromHouse(ph, asc), sName = signs[sn-1].name;
+        const st = planetStrength(pl, sn, ph), b = dignityBadge(st.key);
+        const bh = b ? `<span class="inline-badge" style="background:${b.fill};color:#fff;font-size:9.5px;width:14px;height:14px;" aria-label="${b.label}">${b.symbol}</span>` : '';
+        const cflag = combust[kk.p] ? `<span class="inline-badge" style="background:#EF9F27;color:#fff;font-size:9px;width:14px;height:14px;" title="Combust">C</span>` : '';
+        const rflag = retro[kk.p] ? `<span class="inline-badge" style="background:#7F77DD;color:#fff;font-size:9px;width:14px;height:14px;" title="Retrograde">R</span>` : '';
+        sh = `${bh}${cflag}${rflag}<span style="font-size:11.5px;color:var(--color-text-primary);">H${ph} ${sName}</span>`;
+      }
+      rh += `<div class="kk-row"><span class="kk-name">${planetTag(pl.k)}${pl.name}</span><span class="kk-text">for <b>${kk.for}</b><div style="margin-top:3px;display:flex;align-items:center;gap:4px;flex-wrap:wrap;">${sh}</div></span></div>`;
+    });
+    return `<div class="section-title">Karakas — natural significators</div><div style="font-size:11.5px;color:var(--color-text-tertiary);margin: 2px 0 4px;">Read each topic through both the lord and these karakas.</div><div class="karaka-card">${rh}</div>`;
+  }
+
+  function renderPlanetToPlanetForOccupant(pk){
+    const rels = getRelationsFor(pk); const all = planetToPlanetAspects(); const blocks = [];
+    rels.conjunctions.forEach(c => {
+      const o = c.otherK; const cat = yogaCatalogue[yogaKey(pk, o)];
+      const yt = cat ? `<span class="cb-yoga" style="${cat.kind==='dosha' ? 'background:#F7C1C1;color:#501313;' : (cat.kind==='neutral' ? 'background:#D3D1C7;color:#2C2C2A;' : '')}">${cat.name}</span>` : '';
+      const sm = cat ? cat.conj : 'Conjunction — the two planets blend their significations.';
+      blocks.push(`<div class="aspect-line"><span class="aspect-direction">conj</span><span class="p2p-pair">${planetTag(pk)}<span class="p2p-vs">+</span>${planetTag(o)}${yt}</span><div class="pl-text" style="margin-top:4px;color:var(--color-text-secondary);">${sm}</div></div>`);
+    });
+    rels.outgoing.forEach(o => {
+      const im = isMutualAspect(pk, o.toK, all);
+      const cat = im ? yogaCatalogue[yogaKey(pk, o.toK)] : null;
+      const yt = (cat && im) ? `<span class="cb-yoga" style="${cat.kind==='dosha' ? 'background:#F7C1C1;color:#501313;' : (cat.kind==='neutral' ? 'background:#D3D1C7;color:#2C2C2A;' : '')}">${cat.name}</span>` : '';
+      const tail = im ? ' <span style="color:var(--color-text-tertiary);font-size:11px;">(mutual)</span>' : '';
+      blocks.push(`<div class="aspect-line"><span class="aspect-direction">→</span><span class="p2p-pair">${planetTag(pk)}<span class="p2p-vs">aspects</span>${planetTag(o.toK)}<span style="font-size:11px;color:var(--color-text-secondary);">via ${o.n}<sup>th</sup></span>${tail}${yt}</span>${im && cat ? `<div class="pl-text" style="margin-top:4px;color:var(--color-text-secondary);">${cat.mutual}</div>` : ''}</div>`);
+    });
+    rels.incoming.forEach(i => {
+      const im = isMutualAspect(pk, i.fromK, all); if (im) return;
+      blocks.push(`<div class="aspect-line"><span class="aspect-direction">←</span><span class="p2p-pair">${planetTag(i.fromK)}<span class="p2p-vs">aspects</span>${planetTag(pk)}<span style="font-size:11px;color:var(--color-text-secondary);">via ${i.n}<sup>th</sup></span></span></div>`);
+    });
+    if (!blocks.length) return '';
+    return `<div style="margin-top:8px; padding-top:8px; border-top:0.5px dashed var(--color-border-tertiary);"><div style="font-size:11px;color:var(--color-text-tertiary);margin-bottom:4px;">Planet-to-planet</div>${blocks.join('')}</div>`;
+  }
+
+  function renderGlobalYogas(){
+    const t = document.getElementById('globalYogas');
+    const ys = detectGlobalYogas();
+    if (!ys.length) { t.innerHTML = ''; return; }
+    let html = `<div style="margin: 0 0 14px;"><div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:6px;">Planetary combinations detected</div>`;
+    ys.forEach(y => {
+      const ks = y.kind === 'dosha' ? 'background:rgba(231,75,75,0.06);border-color:rgba(231,75,75,0.25);' : (y.kind === 'neutral' ? 'background:rgba(95,94,90,0.06);border-color:rgba(95,94,90,0.25);' : '');
+      const yts = y.kind === 'dosha' ? 'background:#F7C1C1;color:#501313;' : (y.kind === 'neutral' ? 'background:#D3D1C7;color:#2C2C2A;' : '');
+      const ml = y.mode === 'conj' ? 'Conjunction' : 'Mutual aspect';
+      html += `<div class="conj-block" style="${ks}"><div class="cb-title">${planetTag(y.parts[0])}<span style="color:var(--color-text-tertiary);">${y.mode==='conj' ? '+' : '⇄'}</span>${planetTag(y.parts[1])}<span class="cb-yoga" style="${yts}">${y.name}</span><span style="font-size:11px;color:var(--color-text-tertiary);">${ml}</span></div><div class="cb-meta">${y.summary}</div></div>`;
+    });
+    html += '</div>';
+    t.innerHTML = html;
+  }
+
+  function renderDerivativeReadings(asc){
+    const list = derivativeCommonReads[bhavatBase];
+    if (!list || !list.length) return '';
+    let cards = '';
+    list.forEach(d => {
+      const ah = derivedHouse(bhavatBase, d.offset);
+      const sn = signFromHouse(ah, asc), sName = signs[sn-1].name;
+      const occ = planetsInHouse(ah);
+      const oh = occ.length ? occ.map(k => planetTag(k)).join(' ') : '<span style="color:var(--color-text-tertiary);">empty</span>';
+      cards += `<div class="derive-card" data-house="${ah}"><div class="dc-label">${d.label}</div><div class="dc-target">H${ah} · ${sName}</div><div class="dc-math">${d.math} (B${d.offset}) · ${oh}</div></div>`;
+    });
+    return `<div class="section-title">Common Bhavat Bhavam readings</div><div style="font-size:11.5px;color:var(--color-text-tertiary);">Click a card to jump to that absolute house. Each describes a topic of ${bhavatPersons[bhavatBase].who}.</div><div class="derive-grid">${cards}</div>`;
+  }
+
+  function renderReading(){
+    const asc = parseInt(sel.value, 10);
+    const house = houses[selectedHouse-1];
+    const kpSign = signs[selectedHouse-1];
+    const nSign = signs[signFromHouse(selectedHouse, asc)-1];
+    const same = kpSign.n === nSign.n;
+    const occ = planetsInHouse(selectedHouse);
+    const inc = aspectsOnHouse(selectedHouse);
+    const out = aspectsCastBy(selectedHouse);
+
+    function signPanel(label, sign, ac, at){
+      return `<div class="panel"><h3>${label}</h3><div class="titleline"><span class="pill" style="background:${ac};color:${at}">${sign.name}</span><span style="color:var(--color-text-secondary);font-weight:400;font-size:13px;">${sign.en}</span></div><div class="meta">${sign.element} · ${sign.modality} · Lord: <b>${sign.lord}</b></div><div class="keywords">${sign.qualities.map(q => `<span class="kw-chip">${q}</span>`).join('')}</div><div class="meta" style="margin-top:10px;">${sign.style}</div></div>`;
+    }
+
+    let blend;
+    if (same) blend = `House ${selectedHouse} carries its natural rashi <b>${kpSign.name}</b>, so <i>${house.title}</i> expresses close to the cosmic blueprint.`;
+    else {
+      const eb = {Fire:'energized and direct',Earth:'grounded and material',Air:'mental and social',Water:'emotional and private'}[nSign.element];
+      const mb = {Cardinal:'initiates change in',Fixed:'holds steady in',Mutable:'shifts and adapts in'}[nSign.modality];
+      blend = `Naturally <b>${kpSign.name}</b>; in your chart, <b>${nSign.name}</b> sits here. Still ${kpSign.name}-type matters, but ${nSign.name} makes them ${eb}, and ${mb.toLowerCase()} these affairs.`;
+    }
+
+    let bbHint = '';
+    if (viewMode === 'bhavat') {
+      const bb = bhavatHouseNumber(selectedHouse, bhavatBase);
+      const bbHouse = houses[bb-1];
+      const p = bhavatPersons[bhavatBase];
+      bbHint = `<div style="margin: 10px 0 0; padding: 10px 12px; background: rgba(186, 117, 23, 0.07); border: 0.5px solid rgba(186, 117, 23, 0.3); border-radius: var(--border-radius-md); font-size: 12.5px; line-height: 1.55;"><div style="font-weight:500;color:var(--color-text-primary);">Bhavat reading: B${bb} from H${bhavatBase}</div><div style="margin-top:4px;color:var(--color-text-secondary);">This absolute H${selectedHouse} is the <b>${bb}<sup>th</sup> from H${bhavatBase}</b>. Treating H${bhavatBase} as the 1st house of <b>${p.who.toLowerCase()}</b>, this house reads as their <b>${bbHouse.title.split(' — ')[0]}</b> — i.e., ${bbHouse.themes.slice(0,2).join(', ').toLowerCase()}.</div></div>`;
+    }
+
+    let pb = '';
+    if (occ.length) {
+      pb = '<div class="section-title">Planets sitting here</div>';
+      occ.forEach(k => {
+        const pl = planets.find(p => p.k === k);
+        const st = planetStrength(pl, nSign.n, selectedHouse), b = dignityBadge(st.key);
+        const bh = b ? `<span class="inline-badge" style="background:${b.fill};color:#fff;" aria-label="${b.label}">${b.symbol}</span>` : '';
+        const cOn = !!combust[k], rOn = !!retro[k];
+        const cAvail = pl.canCombust, rAvail = pl.canRetro;
+        const cPill = cAvail ? `<span class="state-pill combust ${cOn ? '' : 'off'}" data-toggle="combust" data-key="${k}">${cOn ? 'C combust' : 'C add'}</span>` : '';
+        const rPill = rAvail ? `<span class="state-pill retro ${rOn ? '' : 'off'}" data-toggle="retro" data-key="${k}">${rOn ? 'R retro' : 'R add'}</span>` : '';
+        const stateRow = (cPill || rPill) ? `<div class="pl-state-row">${cPill}${rPill}</div>` : '';
+        const p2p = renderPlanetToPlanetForOccupant(k);
+        const stateNotes = [];
+        if (cOn && combustionNotes[k]) stateNotes.push(`<div class="state-note">When <b>${pl.name}</b> is combust: ${combustionNotes[k]}</div>`);
+        if (rOn && retroNotes[k]) stateNotes.push(`<div class="state-note retro">When <b>${pl.name}</b> is retrograde: ${retroNotes[k]}</div>`);
+        let nodeHouseNote = '';
+        if (pl.mooltriHouse && selectedHouse === pl.mooltriHouse && !pl.mooltri.includes(nSign.n)) {
+          nodeHouseNote = `<div class="pl-text" style="font-size:12px;color:var(--color-text-secondary);"><b>${pl.name}</b> is in its house-mooltrikona (H${pl.mooltriHouse}) — strong placement even though the sign is ${nSign.name}.</div>`;
+        }
+        pb += `<div class="planet-row"><div class="pl-name-col"><span class="pl-name">${planetTag(pl.k)}${bh}${pl.name}</span>${stateRow}</div><div class="pl-content"><span class="pl-strength ${st.cls}">${st.tag} in ${nSign.name}</span><div class="pl-text">${pl.karaka}. Here it <b>${pl.effects[0]}</b> the affairs of house ${selectedHouse}, filtered through ${nSign.name}'s ${nSign.element.toLowerCase()} temperament.</div>${nodeHouseNote}${stateNotes.join('')}${p2p}</div></div>`;
+      });
+    } else pb = '<div class="meta" style="margin-top:14px;">No planets sitting in this house.</div>';
+
+    const kk = renderKarakaCard(selectedHouse, asc);
+
+    let extras = '';
+    if (viewMode === 'drishti') {
+      if (inc.length || out.length) {
+        extras = '<div class="section-title">Drishti to/from this house</div>';
+        inc.forEach(a => {
+          const pl = a.planet, fs = signs[signFromHouse(a.fromH, asc)-1];
+          extras += `<div class="aspect-line"><span class="aspect-direction">in</span><span class="planet-tag" style="background:${pl.color};">${pl.k}</span><b>${pl.name}</b> from H${a.fromH} (${fs.name}) — ${a.n}<sup>th</sup> aspect, bringing <i>${pl.aspectFlavor}</i>.</div>`;
+        });
+        out.forEach(a => {
+          const pl = a.planet, ts = signs[signFromHouse(a.toH, asc)-1];
+          extras += `<div class="aspect-line"><span class="aspect-direction">out</span><span class="planet-tag" style="background:${pl.color};">${pl.k}</span><b>${pl.name}</b> looks to H${a.toH} (${ts.name}) — ${a.n}<sup>th</sup> aspect, casting <i>${pl.aspectFlavor}</i> there.</div>`;
+        });
+      }
+    } else if (viewMode === 'dispositor') {
+      extras = '<div class="section-title">Dispositor chains</div>' + renderChainPanel(asc);
+    } else if (viewMode === 'bhavat') {
+      extras = renderDerivativeReadings(asc);
+    }
+
+    const lk = nSign.lord.slice(0, 2), lh = placements[lk];
+    const ll = lh ? `Sign lord to study: <b>${nSign.lord}</b> — placed by you in H${lh}.` : `Sign lord to study: <b>${nSign.lord}</b> — wherever it sits, that house also affects these matters.`;
+
+    const cp = `<div class="panel center"><h3>House ${selectedHouse}${viewMode==='bhavat' ? ` · B${bhavatHouseNumber(selectedHouse, bhavatBase)} from H${bhavatBase}` : ''}</h3><div class="titleline">${house.title}</div><div class="meta" style="margin-top:0;">Natural significations</div><ul>${house.themes.map(t => `<li>${t}</li>`).join('')}</ul><div class="blend-headline" style="margin-top:14px;">${blend}</div><div class="meta">${ll}</div>${bbHint}${pb}${kk}${extras}</div>`;
+    const kp = signPanel(`Kal Purush natural rashi`, kpSign, elementColor(kpSign.element), elementTextColor(kpSign.element));
+    const np = signPanel(`Your H${selectedHouse}`, nSign, same ? '#9FE1CB' : elementColor(nSign.element), same ? '#04342C' : elementTextColor(nSign.element));
+    document.getElementById('reading').innerHTML = kp + cp + np;
+
+    document.querySelectorAll('.derive-card').forEach(card => {
+      card.addEventListener('click', () => { const h = parseInt(card.dataset.house, 10); selectedHouse = h; render(); });
+    });
+    document.querySelectorAll('.state-pill').forEach(pill => {
+      pill.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const t = pill.dataset.toggle, k = pill.dataset.key;
+        if (t === 'combust') combust[k] = !combust[k];
+        else if (t === 'retro') retro[k] = !retro[k];
+        render();
+      });
+    });
+  }
+
+  function applyViewMode(){
+    document.getElementById('drishtiSubControls').style.display = viewMode === 'drishti' ? '' : 'none';
+    document.getElementById('dispositorSubControls').style.display = viewMode === 'dispositor' ? '' : 'none';
+    document.getElementById('bhavatSubControls').style.display = viewMode === 'bhavat' ? '' : 'none';
+  }
+
+  function render(){
+    applyViewMode();
+    renderLegend();
+    renderPlanetBar();
+    renderChainTargetDropdown();
+    renderBhavatBaseDropdown();
+    renderBhavatBanner();
+    renderKalPurush();
+    renderNative();
+    renderGlobalYogas();
+    renderReading();
+  }
+
+  sel.addEventListener('change', () => { selectedHouse = 1; render(); });
+  document.querySelectorAll('#chartStyle button').forEach(b => {
+    b.addEventListener('click', () => { mode = b.dataset.mode; document.querySelectorAll('#chartStyle button').forEach(x => x.classList.remove('active')); b.classList.add('active'); render(); });
+  });
+  document.querySelectorAll('#drishtiMode button').forEach(b => {
+    b.addEventListener('click', () => { drishtiMode = b.dataset.mode; document.querySelectorAll('#drishtiMode button').forEach(x => x.classList.remove('active')); b.classList.add('active'); render(); });
+  });
+  document.querySelectorAll('#viewTabs button').forEach(b => {
+    b.addEventListener('click', () => { viewMode = b.dataset.view; document.querySelectorAll('#viewTabs button').forEach(x => x.classList.remove('active')); b.classList.add('active'); render(); });
+  });
+  document.getElementById('chainTarget').addEventListener('change', (e) => { chainTarget = e.target.value === 'all' ? null : e.target.value; render(); });
+  document.getElementById('bhavatBase').addEventListener('change', (e) => { bhavatBase = parseInt(e.target.value, 10); render(); });
+  document.getElementById('clearPlanets').addEventListener('click', () => { placements = {}; activePlanet = null; chainTarget = null; combust = {}; retro = {}; render(); });
+
+  // Instructions panel toggle
+  const instructions = document.getElementById('instructions');
+  const instructionsToggle = document.getElementById('instructionsToggle');
+  if (instructions && instructionsToggle) {
+    instructionsToggle.addEventListener('click', () => {
+      const collapsed = instructions.classList.toggle('collapsed');
+      instructionsToggle.textContent = collapsed ? 'Show' : 'Hide';
+      instructionsToggle.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+    });
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
