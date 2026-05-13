@@ -1,6 +1,6 @@
-# Kal Purush Kundali
+# Kundali Reading Basics
 
-An interactive Vedic astrology learning tool. Visualize how a native's kundali overlays on the **Kal Purush** blueprint — the cosmic chart where Aries naturally rules H1, Taurus H2, and so on.
+An interactive Vedic astrology learning tool. Visualize how to read native's kundali with overlays on the **Kal Purush** blueprint
 
 No backend, no birth-data calculation. This is a teaching aid, not a prediction tool.
 
