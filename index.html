@@ -333,6 +333,114 @@
     line-height: 1.5;
     font-style: italic;
   }
+  .read-card {
+    margin-top: 10px;
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
+  }
+  .read-card .rc-header {
+    background: rgba(83, 74, 183, 0.06);
+    padding: 8px 12px;
+    font-size: 11.5px;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 500;
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .read-layer {
+    display: flex;
+    gap: 10px;
+    padding: 10px 12px;
+    font-size: 12.5px;
+    line-height: 1.55;
+  }
+  .read-layer + .read-layer { border-top: 0.5px solid var(--color-border-tertiary); }
+  .read-layer .rl-num {
+    flex-shrink: 0;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--color-background-secondary);
+    color: var(--color-text-secondary);
+    font-size: 11px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+  .read-layer .rl-body { flex: 1; min-width: 0; }
+  .read-layer .rl-label {
+    font-size: 11px;
+    color: var(--color-text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    font-weight: 500;
+    margin-bottom: 2px;
+  }
+  .read-layer .rl-text { color: var(--color-text-primary); }
+  .read-layer .rl-text b { font-weight: 500; }
+  .read-layer .rl-tag {
+    display: inline-block;
+    margin-left: 4px;
+    padding: 1px 7px;
+    border-radius: 8px;
+    font-size: 10.5px;
+    font-weight: 500;
+  }
+  .read-layer .rl-tag.good { background: #C0DD97; color: #173404; }
+  .read-layer .rl-tag.mixed { background: #FAC775; color: #412402; }
+  .read-layer .rl-tag.tough { background: #F7C1C1; color: #501313; }
+  .read-layer .rl-tag.neutral { background: #D3D1C7; color: #2C2C2A; }
+  .read-synth {
+    background: rgba(15, 110, 86, 0.07);
+    padding: 12px;
+    border-top: 0.5px solid var(--color-border-tertiary);
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--color-text-primary);
+  }
+  .read-synth .rs-label {
+    font-size: 11px;
+    color: #04342C;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+  .read-synth b { font-weight: 500; }
+  .body-map-wrap {
+    margin: 24px 0 0;
+    padding: 16px;
+    background: var(--color-background-secondary);
+    border-radius: var(--border-radius-lg);
+  }
+  .body-map-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 4px; }
+  .body-map-caption { font-size: 11.5px; color: var(--color-text-secondary); line-height: 1.5; margin-bottom: 12px; }
+  .body-map-grid { display: grid; grid-template-columns: 1fr; gap: 16px; align-items: start; }
+  @media (min-width: 640px) { .body-map-grid { grid-template-columns: 240px 1fr; } }
+  .body-svg-frame { background: var(--color-background-primary); border-radius: var(--border-radius-md); padding: 12px 10px; display: flex; justify-content: center; }
+  .body-svg-frame svg { width: 100%; max-width: 200px; height: auto; display: block; }
+  .body-region { fill: var(--color-background-secondary); stroke: var(--color-border-secondary); stroke-width: 0.7; transition: fill 0.2s, stroke 0.2s; cursor: pointer; }
+  .body-region:hover { fill: rgba(83, 74, 183, 0.18); }
+  .body-region.selected { fill: #CECBF6; stroke: var(--color-text-primary); stroke-width: 1.2; }
+  .body-region.afflicted { fill: rgba(163, 45, 45, 0.16); }
+  .body-region.afflicted.selected { fill: #CECBF6; }
+  .body-region.protected { fill: rgba(15, 110, 86, 0.12); }
+  .body-region.protected.selected { fill: #CECBF6; }
+  .body-readout { background: var(--color-background-primary); border-radius: var(--border-radius-md); padding: 12px 14px; font-size: 12.5px; line-height: 1.55; color: var(--color-text-secondary); }
+  .body-readout .br-house { font-size: 11px; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 4px; }
+  .body-readout .br-part { font-size: 14px; color: var(--color-text-primary); font-weight: 500; margin-bottom: 4px; }
+  .body-readout .br-status { margin-top: 8px; padding: 6px 9px; border-radius: 4px; border-left: 2.5px solid #A32D2D; background: rgba(163, 45, 45, 0.06); font-size: 12px; color: var(--color-text-primary); line-height: 1.5; }
+  .body-readout .br-status.protected { border-left-color: #0F6E56; background: rgba(15, 110, 86, 0.06); }
+  .body-readout .br-status b { font-weight: 500; }
+  .body-legend { display:flex; gap:12px; flex-wrap:wrap; font-size: 11px; color: var(--color-text-secondary); margin-top: 10px; }
+  .body-legend .ll-swatch { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: middle; margin-right: 4px; border: 0.5px solid var(--color-border-secondary); }
   .conj-block { background: rgba(83, 74, 183, 0.06); border: 0.5px solid rgba(83, 74, 183, 0.25); border-radius: var(--border-radius-md); padding: 8px 12px; margin-top: 8px; font-size: 12.5px; line-height: 1.55; }
   .conj-block + .conj-block { margin-top: 6px; }
   .conj-block .cb-title { display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-weight:500; color: var(--color-text-primary); }
@@ -468,6 +576,41 @@
       </div>
     </div>
     <div class="kw-legend" id="legend"></div>
+    <div class="body-map-wrap">
+      <div class="body-map-title">Kalapurusha — body map</div>
+      <div class="body-map-caption">Each house maps to a body region. Click any region to select that house, or click houses on your chart to see them light up here.</div>
+      <div class="body-map-grid">
+        <div class="body-svg-frame">
+          <svg viewBox="0 0 200 420" xmlns="http://www.w3.org/2000/svg" id="kpBody">
+            <ellipse class="body-region" cx="100" cy="34" rx="22" ry="26" data-h="1"/>
+            <path class="body-region" d="M 88 58 L 112 58 L 116 76 L 84 76 Z" data-h="2"/>
+            <path class="body-region" d="M 56 84 Q 70 78 84 80 L 84 92 L 76 124 L 62 160 L 48 160 L 42 124 Q 38 104 56 84 Z" data-h="3"/>
+            <path class="body-region" d="M 144 84 Q 130 78 116 80 L 116 92 L 124 124 L 138 160 L 152 160 L 158 124 Q 162 104 144 84 Z" data-h="3"/>
+            <path class="body-region" d="M 84 80 L 116 80 Q 122 92 122 110 Q 122 130 118 144 L 82 144 Q 78 130 78 110 Q 78 92 84 80 Z" data-h="4"/>
+            <path class="body-region" d="M 82 144 L 118 144 Q 120 160 118 178 L 82 178 Q 80 160 82 144 Z" data-h="5"/>
+            <path class="body-region" d="M 82 178 L 118 178 Q 120 194 124 210 L 76 210 Q 80 194 82 178 Z" data-h="6"/>
+            <path class="body-region" d="M 76 210 L 124 210 Q 130 222 128 238 L 72 238 Q 70 222 76 210 Z" data-h="7"/>
+            <path class="body-region" d="M 72 238 L 128 238 L 124 258 L 76 258 Z" data-h="8"/>
+            <path class="body-region" d="M 76 258 L 99 258 L 94 326 L 74 326 Q 70 292 76 258 Z" data-h="9"/>
+            <path class="body-region" d="M 101 258 L 124 258 L 126 326 L 106 326 Q 106 292 101 258 Z" data-h="9"/>
+            <ellipse class="body-region" cx="84" cy="338" rx="12" ry="9" data-h="10"/>
+            <ellipse class="body-region" cx="116" cy="338" rx="12" ry="9" data-h="10"/>
+            <path class="body-region" d="M 74 350 Q 70 354 72 366 L 76 388 L 90 388 L 92 366 Q 94 354 92 350 Z" data-h="11"/>
+            <path class="body-region" d="M 108 350 Q 106 354 108 366 L 110 388 L 124 388 L 128 366 Q 130 354 126 350 Z" data-h="11"/>
+            <path class="body-region" d="M 72 392 L 92 392 Q 96 400 94 408 L 66 408 Q 64 400 72 392 Z" data-h="12"/>
+            <path class="body-region" d="M 108 392 L 128 392 Q 136 400 134 408 L 106 408 Q 104 400 108 392 Z" data-h="12"/>
+          </svg>
+        </div>
+        <div>
+          <div class="body-readout" id="bodyReadout"></div>
+          <div class="body-legend">
+            <span><span class="ll-swatch" style="background:#CECBF6;"></span>Selected house</span>
+            <span><span class="ll-swatch" style="background:rgba(163,45,45,0.16);"></span>Stress</span>
+            <span><span class="ll-swatch" style="background:rgba(15,110,86,0.12);"></span>Protection</span>
+          </div>
+        </div>
+      </div>
+    </div>
     <div id="globalYogas"></div>
     <div class="reading" id="reading"></div>
   </div>
@@ -509,18 +652,18 @@
     { n:12,title:'Vyaya — loss & moksha',themes:['Expenses','Foreign lands','Sleep & bed','Liberation'],karakas:[{p:'Sa',for:'losses, separation, isolation'},{p:'Ke',for:'moksha, liberation'}]}
   ];
   const bodyHealth = {
-    1:{body:'Head, face, brain, hair, complexion',systems:'Overall vitality (ojas), nervous system, immune strength, body constitution',tendencies:'Headaches, migraines, neurological issues, low immunity, hair loss, skin disorders. The 1st sets the baseline strength of the entire body — a strong lagna means strong everything.'},
-    2:{body:'Face, right eye, mouth, teeth, tongue, throat, vocal cords',systems:'Speech mechanism, taste, swallowing, salivary glands, thyroid (some traditions)',tendencies:'Dental decay, gum disease, throat infections, voice disorders (stammering, hoarseness), right-eye problems, food-related diseases, obesity from overeating. Strong link to <b>food choices and what enters the body</b>.'},
-    3:{body:'Arms, shoulders, hands, upper chest, lungs (right side), right ear, throat (lower)',systems:'Motor coordination, respiration, hearing (right ear), prana-vata (life-force movement)',tendencies:'Arm/shoulder injuries, frozen shoulder, repetitive strain, asthma, bronchitis, right-ear hearing loss. Mars-related house, so accidents/wounds to upper limbs are common when afflicted.'},
-    4:{body:'Chest, heart, breasts, lungs, ribcage, upper back',systems:'Cardiovascular, respiratory, emotional-psychosomatic axis (Moon karaka)',tendencies:'Heart disease, hypertension, palpitations, asthma, chronic anxiety, breast issues/cancer, pleurisy. Because Moon (mind) co-rules this house, <b>emotional stress shows up as cardiac/respiratory symptoms</b>.'},
-    5:{body:'Upper abdomen, stomach, liver, gallbladder, pancreas, upper spine',systems:'Digestion (jathar-agni), metabolism, blood sugar, reproductive potency (creative seed)',tendencies:'Liver dysfunction, jaundice, fatty liver, indigestion, ulcers, diabetes, miscarriage, fertility issues, mental dullness (intelligence is 5th-house karaka — afflicted = poor focus/learning issues).'},
-    6:{body:'Lower abdomen, small intestine, large intestine (partly), kidneys, navel region',systems:'Digestion (lower), immune (gut microbiome), urinary, lymphatic',tendencies:'<b>The disease house par excellence.</b> Chronic illness, gut disorders (IBS, IBD), food allergies, kidney stones, urinary infections, parasitic infections, accidents requiring stitches/hospitalization, autoimmunity. Strong 6th = strong immunity to fight disease; afflicted 6th = chronic ailments.'},
-    7:{body:'Lower belly, pelvis, prostate, uterus, ovaries, kidneys (lower pole)',systems:'Reproductive (lower), urinary (bladder), endocrine (pelvic glands)',tendencies:'Diabetes (sweetness/Venus connection), reproductive disorders, prostate issues, uterine problems, kidney stones, sexual dysfunction, STDs (when also linked to 8th/12th). Venus-ruled house — afflicted Venus brings <b>diabetes and sugar metabolism issues</b>.'},
-    8:{body:'Genitals, anus, external reproductive organs, perineum, excretory organs',systems:'Excretion, longevity (ayur), chronic/hidden processes, surgical interventions',tendencies:'<b>The house of chronic, hidden, and life-threatening conditions.</b> Cancer, surgeries, accidents requiring hospitalization, hemorrhoids, fistulas, STDs, chronic urinary issues, mental illness (hidden), suicidal tendencies. Also the house of <b>longevity</b> — its strength determines lifespan. Saturn here = chronic but long life; malefics afflicting = sudden events.'},
-    9:{body:'Hips, thighs, upper legs, hip joints, femur, arteries (femoral)',systems:'Arterial circulation, hip mobility, fat metabolism (Jupiter karaka), sciatic nerve',tendencies:'Hip fractures, sciatica, thigh injuries, varicose veins, high cholesterol, obesity in the lower body, arthritis of the hip. Jupiter co-rules this house — afflicted = <b>weight gain, fatty deposits, lipid disorders</b>.'},
-    10:{body:'Knees, kneecaps, knee joints, skeletal frame (broadly)',systems:'Skeletal-joint system, weight-bearing structure, bones',tendencies:'Knee pain/injuries, arthritis (osteo + rheumatoid), joint stiffness, gout, posture-related back pain, ligament tears. Saturn-ruled house — <b>aging-related joint deterioration</b>. Karma-related accidents to legs/knees.'},
-    11:{body:'Calves, shins, ankles (upper), left ear, lower-leg circulation',systems:'Lower-leg vascular system, hearing (left ear)',tendencies:'Calf cramps, varicose veins, deep-vein thrombosis, shin splints, ankle injuries, left-ear hearing loss/tinnitus, lower-leg edema. Less commonly afflicted than other houses but watch when Saturn/Rahu sit here.'},
-    12:{body:'Feet, toes, left eye, lymphatic system (some traditions)',systems:'Sleep, unconscious mind, immune suppression, lymphatic drainage, surrender of the body (death/moksha)',tendencies:'<b>Foot problems, left-eye issues (cataract, retinal), insomnia, sleep disorders, mental illness (depression, psychosis, addictions), hospitalization, surgery, paralysis, coma.</b> 12th is the house of <b>bed</b> — sleep quality, hospital stays, and the final lying down. Strong 12th = good sleep, healthy detachment; afflicted = isolation, addictions, mental health crises.'}
+    1:{body:'Head and face',systems:'Overall vitality and constitution',tendencies:'Sets the baseline strength of the body. Headaches and low energy are signals when the 1st is afflicted.'},
+    2:{body:'Face, mouth, teeth, throat, voice',systems:'Speech and what enters the body',tendencies:'Dental and throat issues, voice problems, food-related concerns.'},
+    3:{body:'Arms, shoulders, upper chest',systems:'Breathing and physical reach',tendencies:'Arm or shoulder injuries, respiratory weakness.'},
+    4:{body:'Chest and heart',systems:'Heart, lungs, and the emotional mind',tendencies:'Heart and breathing concerns. Emotional stress often shows up here.'},
+    5:{body:'Upper abdomen, stomach, liver',systems:'Digestion and metabolism',tendencies:'Liver, digestion, and stomach issues. Also linked to fertility.'},
+    6:{body:'Lower abdomen and intestines',systems:'Gut, immunity, and daily wear-and-tear',tendencies:'The main house of disease — gut, immunity, allergies. A strong 6th fights illness off; a weak one carries chronic ones.'},
+    7:{body:'Lower belly, pelvis, kidneys',systems:'Reproductive and urinary',tendencies:'Diabetes, kidney and reproductive concerns.'},
+    8:{body:'Genitals and excretory organs',systems:'Longevity and chronic processes',tendencies:'Hidden, chronic, or sudden conditions. Also governs lifespan overall.'},
+    9:{body:'Hips and thighs',systems:'Circulation and fat metabolism',tendencies:'Hip and thigh issues, weight in the lower body.'},
+    10:{body:'Knees and joints',systems:'Skeleton and joints',tendencies:'Knees, joint pain, posture problems.'},
+    11:{body:'Calves, shins, ankles',systems:'Lower-leg circulation',tendencies:'Lower-leg cramps and circulation issues.'},
+    12:{body:'Feet and the left eye',systems:'Sleep, hospitalization, mental rest',tendencies:'Foot problems, sleep disorders, mental health, hospital stays. The house of bed — for sleep, hospital, or letting go.'}
   };
   // Classical malefic/benefic groupings used for the health-alert layer
   const malefics = ['Sa','Ma','Ra','Ke','Su'];
@@ -669,6 +812,83 @@
   }
   function derivedHouse(base, offset){ return ((base - 1 + offset - 1) % 12) + 1; }
   function bhavatHouseNumber(abs, base){ return ((abs - base + 12) % 12) + 1; }
+
+  // Which absolute houses does a planet lord for a given lagna? Nodes return [].
+  function lordedHousesFor(planet, ascSign){
+    const out = [];
+    for (let sn=1; sn<=12; sn++){
+      if (signs[sn-1].lord === planet.name) out.push(houseFromSign(sn, ascSign));
+    }
+    return out;
+  }
+  // House categorization
+  const KENDRAS = [1,4,7,10];
+  const TRIKONAS = [1,5,9];
+  const DUSTHANAS = [6,8,12];
+  const MARAKAS = [2,7]; // simplified — 7 is also kendra so context matters
+  const UPACHAYAS = [3,6,10,11];
+
+  // Functional nature of a planet for the given lagna.
+  // Returns {label, tone, explanation} where tone is 'good'|'mixed'|'tough'|'neutral'
+  function functionalNature(planet, ascSign){
+    if (planet.k === 'Ra' || planet.k === 'Ke') {
+      return {label:'Shadow planet', tone:'mixed', explanation:`${planet.name} has no lordship. It acts mainly through whichever house it sits in and the lord of that sign.`};
+    }
+    const owned = lordedHousesFor(planet, ascSign);
+    if (!owned.length) return {label:'Neutral', tone:'neutral', explanation:''};
+    const ownsKendra = owned.some(h => KENDRAS.includes(h));
+    const ownsTrikona = owned.some(h => TRIKONAS.includes(h));
+    const ownsDusthana = owned.some(h => DUSTHANAS.includes(h));
+    const ownsMaraka = owned.some(h => h === 2 || h === 7);
+    const onlyTrikona = owned.every(h => TRIKONAS.includes(h));
+    const onlyDusthana = owned.every(h => DUSTHANAS.includes(h));
+
+    // Yogakaraka — lords both a kendra AND a trikona (the famous combination)
+    if (ownsKendra && ownsTrikona && owned.length === 2 && !owned.includes(1)) {
+      return {label:'Yogakaraka', tone:'good', explanation:`${planet.name} lords both a kendra (H${owned.find(h=>KENDRAS.includes(h))}) and a trikona (H${owned.find(h=>TRIKONAS.includes(h))}) — the most auspicious combination. Yogakarakas produce strong, lasting results in their dasha and wherever they sit.`};
+    }
+    // Kendra+Trikona via lagna lordship (lagna is both kendra and trikona) — still considered yogakaraka-like
+    if (ownsKendra && ownsTrikona && owned.includes(1)) {
+      return {label:'Lagna lord + kendra-trikona', tone:'good', explanation:`${planet.name} lords the lagna (H1) and another house (H${owned.filter(h=>h!==1).join(', H')}). The lagna lord is always important; this planet shapes who you are.`};
+    }
+    // Pure trikona lord
+    if (onlyTrikona) {
+      return {label:'Trikona lord', tone:'good', explanation:`${planet.name} lords trikona house${owned.length>1?'s':''} (H${owned.join(', H')}). Trikona lords bring fortune, dharma, and grace.`};
+    }
+    // Pure kendra lord
+    if (owned.every(h => KENDRAS.includes(h)) && !ownsDusthana) {
+      // Natural benefic owning kendra becomes neutralized (kendradhipati dosha) for Ju/Ve/Mo/Me
+      const naturalBenefic = ['Ju','Ve','Mo','Me'].includes(planet.k);
+      if (naturalBenefic) return {label:'Kendra lord (kendradhipati)', tone:'mixed', explanation:`${planet.name} lords kendra house${owned.length>1?'s':''} (H${owned.join(', H')}). Natural benefics lording a kendra get neutralized — they lose some of their benefic power but don't become harmful.`};
+      return {label:'Kendra lord', tone:'good', explanation:`${planet.name} lords kendra house${owned.length>1?'s':''} (H${owned.join(', H')}). Natural malefics lording kendras become acceptable here.`};
+    }
+    // Pure dusthana lord
+    if (onlyDusthana) {
+      return {label:'Dusthana lord', tone:'tough', explanation:`${planet.name} lords dusthana house${owned.length>1?'s':''} (H${owned.join(', H')}) — houses of difficulty. ${planet.name} tends to bring obstacles or losses to the houses it sits in or aspects.`};
+    }
+    // Maraka — lord of 2nd or 7th (without dusthana entanglement above)
+    if (ownsMaraka && !ownsKendra && !ownsTrikona) {
+      return {label:'Maraka lord', tone:'mixed', explanation:`${planet.name} lords maraka house${owned.length>1?'s':''} (H${owned.join(', H')}). Maraka lords can bring health/longevity challenges in their dasha, but also wealth (H2) and partnership (H7).`};
+    }
+    // Mixed
+    return {label:'Mixed lordship', tone:'mixed', explanation:`${planet.name} lords H${owned.join(' and H')}. Read both lordships together — affairs of these houses travel with this planet.`};
+  }
+
+  // For an incoming-aspect planet, what does its lordship + nature mean for the receiver?
+  function aspectInfluence(aspectingPlanet, ascSign){
+    const owned = lordedHousesFor(aspectingPlanet, ascSign);
+    const isNode = aspectingPlanet.k === 'Ra' || aspectingPlanet.k === 'Ke';
+    const isMalefic = ['Sa','Ma','Ra','Ke','Su'].includes(aspectingPlanet.k);
+    const ownsBad = owned.some(h => DUSTHANAS.includes(h));
+    const ownsGood = owned.some(h => TRIKONAS.includes(h)) || owned.some(h => h===1);
+    let tone, gist;
+    if (isNode) { tone = 'mixed'; gist = `As a shadow planet, ${aspectingPlanet.name} amplifies and confuses what it touches — adds ${aspectingPlanet.k==='Ra'?'obsession or hunger':'detachment or dissolution'} to the affairs here.`; }
+    else if (ownsBad && isMalefic) { tone = 'tough'; gist = `As lord of H${owned.filter(h=>DUSTHANAS.includes(h)).join(', H')} (difficult house${owned.filter(h=>DUSTHANAS.includes(h)).length>1?'s':''}), ${aspectingPlanet.name} brings those troubles to whatever it aspects — ${aspectingPlanet.aspectFlavor}.`; }
+    else if (ownsGood && !isMalefic) { tone = 'good'; gist = `As lord of H${owned.filter(h=>TRIKONAS.includes(h)||h===1).join(', H')}, ${aspectingPlanet.name} carries good vibes there — its drishti adds ${aspectingPlanet.aspectFlavor}.`; }
+    else if (isMalefic) { tone = 'mixed'; gist = `As a natural malefic lording H${owned.join(', H')}, ${aspectingPlanet.name}'s aspect adds ${aspectingPlanet.aspectFlavor} — slows, restricts, or sharpens the affairs.`; }
+    else { tone = 'mixed'; gist = `Lord of H${owned.join(', H')}, ${aspectingPlanet.name} aspects with ${aspectingPlanet.aspectFlavor}.`; }
+    return {tone, gist, owned};
+  }
 
   const sel = document.getElementById('ascSelect');
   signs.forEach(s => { const o = document.createElement('option'); o.value = s.n; o.textContent = `${s.name} (${s.en})`; sel.appendChild(o); });
@@ -1298,19 +1518,147 @@
 
     let alerts = '';
     if (mal.length || aspectingMalefics.length) {
-      const occText = mal.length ? `${mal.map(k=>planetTag(k)).join(' ')} sitting here` : '';
-      const aspText = aspectingMalefics.length ? `${aspectingMalefics.map(a=>planetTag(a.k)).join(' ')} aspecting from elsewhere` : '';
-      const both = [occText, aspText].filter(Boolean).join(' and ');
-      alerts += `<div class="health-alert"><b>Affliction signal:</b> malefic influence on this house — ${both}. Classical reading: the body part and disease tendencies above become <b>more active</b>. Watch especially for the patterns listed; chronic forms become more likely if Saturn is involved, sudden forms if Mars/Rahu.</div>`;
+      const occText = mal.length ? `${mal.map(k=>planetTag(k)).join(' ')} sits here` : '';
+      const aspText = aspectingMalefics.length ? `${aspectingMalefics.map(a=>planetTag(a.k)).join(' ')} aspects from outside` : '';
+      const both = [occText, aspText].filter(Boolean).join(', and ');
+      alerts += `<div class="health-alert"><b>Stress signal:</b> ${both}. Watch this house more closely.</div>`;
     }
     if (ben.length || aspectingBenefics.length) {
-      const occText = ben.length ? `${ben.map(k=>planetTag(k)).join(' ')} sitting here` : '';
-      const aspText = aspectingBenefics.length ? `${aspectingBenefics.map(a=>planetTag(a.k)).join(' ')} aspecting from elsewhere` : '';
-      const both = [occText, aspText].filter(Boolean).join(' and ');
-      alerts += `<div class="health-alert protective"><b>Protective signal:</b> benefic influence — ${both}. Classical reading: <b>some shielding</b> for the body part above. Jupiter is the strongest healer; Venus and a strong Moon also protect; Mercury helps when not combust.</div>`;
+      const occText = ben.length ? `${ben.map(k=>planetTag(k)).join(' ')} sits here` : '';
+      const aspText = aspectingBenefics.length ? `${aspectingBenefics.map(a=>planetTag(a.k)).join(' ')} aspects from outside` : '';
+      const both = [occText, aspText].filter(Boolean).join(', and ');
+      alerts += `<div class="health-alert protective"><b>Helpful signal:</b> ${both}. Some natural protection here.</div>`;
     }
 
-    return `<div class="section-title">Body & health (kalapurusha)</div><div style="font-size:11.5px;color:var(--color-text-tertiary);margin: 2px 0 4px;">House 6, 8, and 12 (dusthanas) are the main disease houses; afflictions to any house show in the body parts below.</div><div class="body-card"><div class="body-row"><span class="br-label">Body part</span><span class="br-text"><b>${data.body}</b></span></div><div class="body-row"><span class="br-label">Systems</span><span class="br-text">${data.systems}</span></div><div class="body-row"><span class="br-label">Tendencies</span><span class="br-text">${data.tendencies}</span></div>${alerts}</div><div class="health-disclaimer">Classical reference for study only — real health concerns need real doctors, not charts.</div>`;
+    return `<div class="section-title">Body & health</div><div style="font-size:11.5px;color:var(--color-text-tertiary);margin: 2px 0 4px;">Each house maps to a part of the body. Houses 6, 8, and 12 are the disease houses.</div><div class="body-card"><div class="body-row"><span class="br-label">Body part</span><span class="br-text"><b>${data.body}</b></span></div><div class="body-row"><span class="br-label">Systems</span><span class="br-text">${data.systems}</span></div><div class="body-row"><span class="br-label">Notes</span><span class="br-text">${data.tendencies}</span></div>${alerts}</div><div class="health-disclaimer">For learning only — not medical advice.</div>`;
+  }
+
+  // The "How to read this" walkthrough — for one placed planet in the selected house
+  function renderReadThisCard(pk, hi, asc){
+    const pl = planets.find(p => p.k === pk);
+    const sNum = signFromHouse(hi, asc);
+    const sign = signs[sNum-1];
+    const isNode = pl.k === 'Ra' || pl.k === 'Ke';
+
+    // Layer 1: identity
+    const owned = lordedHousesFor(pl, asc);
+    let layer1;
+    if (isNode) {
+      layer1 = `<b>${pl.name}</b> represents <i>${pl.karaka.toLowerCase()}</i>. As a shadow planet, it doesn't lord any houses — its meaning comes entirely from where it sits and what sign-lord rules that sign.`;
+    } else if (owned.length) {
+      layer1 = `<b>${pl.name}</b> naturally signifies <i>${pl.karaka.toLowerCase()}</i>. For your lagna, it lords <b>H${owned.join(' and H')}</b> — so it carries those affairs with it wherever it goes.`;
+    } else {
+      layer1 = `<b>${pl.name}</b> signifies <i>${pl.karaka.toLowerCase()}</i>.`;
+    }
+
+    // Layer 2: placement
+    const houseTitle = houses[hi-1].title.split(' — ')[1] || houses[hi-1].title;
+    const layer2 = `${pl.name} sits in <b>H${hi}</b> — the house of <i>${houseTitle}</i>. That means ${isNode ? `${pl.name}'s amplifying/dissolving energy` : (owned.length ? `affairs of H${owned.join(' and H')}` : `${pl.name}'s significations`)} get expressed through <b>${houseTitle}</b>-type matters.`;
+
+    // Layer 3: sign relationship
+    const strength = planetStrength(pl, sNum, hi);
+    let layer3, layer3Tone;
+    if (strength.key === 'exalt') { layer3 = `${pl.name} is in <b>${sign.name}</b>, its <b>exaltation sign</b> — best possible state. It performs at peak strength here.`; layer3Tone = 'good'; }
+    else if (strength.key === 'mooltri' && pl.mooltri.includes(sNum)) { layer3 = `${pl.name} is in <b>${sign.name}</b>, its <b>mooltrikona sign</b> — second-strongest. Very capable here.`; layer3Tone = 'good'; }
+    else if (strength.key === 'mooltri' && pl.mooltriHouse === hi) { layer3 = `${pl.name} is in <b>${sign.name}</b>, but more importantly it sits in <b>H${pl.mooltriHouse}</b> — its mooltrikona house. Strong by bhava even though the sign is different.`; layer3Tone = 'good'; }
+    else if (strength.key === 'own') { layer3 = `${pl.name} is in its <b>own sign ${sign.name}</b> — comfortable and competent here.`; layer3Tone = 'good'; }
+    else if (strength.key === 'debil') { layer3 = `${pl.name} is in <b>${sign.name}</b>, its <b>debilitation sign</b> — weakest state. Its significations struggle, and what it lords suffers unless neecha-bhanga (cancellation of debility) applies.`; layer3Tone = 'tough'; }
+    else if (strength.key === 'friend') { layer3 = `${pl.name} is in <b>${sign.name}</b>, a <b>friend's sign</b> (${sign.lord} rules it). Reasonably supportive environment.`; layer3Tone = 'mixed'; }
+    else if (strength.key === 'enemy') { layer3 = `${pl.name} is in <b>${sign.name}</b>, an <b>enemy's sign</b> (${sign.lord} rules it). Uncomfortable — ${pl.name}'s natural drive doesn't match the sign's style, so its expression gets distorted.`; layer3Tone = 'tough'; }
+    else { layer3 = `${pl.name} is in <b>${sign.name}</b> — a neutral sign for it. Neither helped nor blocked by the environment.`; layer3Tone = 'neutral'; }
+    // Add a flavor note about sign temperament
+    layer3 += ` ${sign.name} is ${sign.element.toLowerCase()} and ${sign.modality.toLowerCase()} — its style is ${sign.style.split(';')[0]}, which colors how ${pl.name} expresses here.`;
+
+    // Layer 4: functional nature
+    const fn = functionalNature(pl, asc);
+    const layer4 = `${fn.explanation || `${pl.name} is functionally neutral for this lagna.`}`;
+
+    // Layer 5: incoming aspects from others
+    const incoming = aspectsOnHouse(hi).filter(a => a.fromH !== hi); // exclude self
+    // Filter to only aspects landing on this specific planet's house from other planets
+    // For per-planet reading, also gather planets aspecting via planet-to-planet
+    const allRels = planetToPlanetAspects();
+    const incomingPlanet = allRels.filter(r => r.kind === 'aspect' && r.toK === pk);
+    const conjunctions = allRels.filter(r => r.kind === 'conj' && r.fromK === pk);
+
+    let layer5Parts = [];
+    if (conjunctions.length) {
+      conjunctions.forEach(c => {
+        const cp = planets.find(p => p.k === c.toK);
+        const cInfl = aspectInfluence(cp, asc);
+        layer5Parts.push(`<b>${cp.name}</b> sits in the same house — a <b>conjunction</b>. ${cInfl.gist} The two planets blend; read ${pl.name}'s significations together with ${cp.name}'s.`);
+      });
+    }
+    if (incomingPlanet.length) {
+      incomingPlanet.forEach(a => {
+        const ap = planets.find(p => p.k === a.fromK);
+        const apHouse = placements[a.fromK];
+        const inf = aspectInfluence(ap, asc);
+        layer5Parts.push(`<b>${ap.name}</b> aspects from <b>H${apHouse}</b> (its ${a.n}<sup>th</sup>-aspect). ${inf.gist}`);
+      });
+    }
+    let layer5;
+    if (layer5Parts.length) {
+      layer5 = layer5Parts.join(' &nbsp;·&nbsp; ');
+    } else {
+      layer5 = `No other planet conjuncts or aspects ${pl.name} here — it acts on its own.`;
+    }
+
+    // Layer 6: synthesis
+    let synthesis;
+    if (isNode) {
+      synthesis = `<b>${pl.name} in H${hi} (${sign.name})</b> means ${houseTitle} affairs become a place of ${pl.k==='Ra'?'obsession, foreign or unusual involvement, and amplified desires':'detachment, spiritual leanings, or unconscious patterns'}. ${sign.name} flavors this with ${sign.qualities.slice(0,2).map(q=>q.toLowerCase()).join(' and ')}.`;
+    } else {
+      const goodSide = (fn.tone === 'good') ? `${pl.name} is functionally beneficial here — favors strong outcomes` : (fn.tone === 'tough') ? `${pl.name} is functionally difficult here — outcomes are harder-won` : `${pl.name} produces mixed results`;
+      const signSide = (layer3Tone === 'good') ? `and is well-placed in ${sign.name}, so its drive is unhindered` : (layer3Tone === 'tough') ? `and is poorly placed in ${sign.name}, so its drive gets distorted into ${sign.qualities[0].toLowerCase()} expressions` : `and is comfortably placed in ${sign.name}`;
+      const lordPart = owned.length ? `Affairs of H${owned.join(' and H')} (what ${pl.name} lords) get expressed in H${hi}'s realm — ${houseTitle}.` : '';
+      const aspectPart = (incomingPlanet.length || conjunctions.length) ? ` Others act on ${pl.name} here, modifying the reading.` : '';
+      synthesis = `<b>Read together:</b> ${goodSide} ${signSide}. ${lordPart}${aspectPart}`;
+    }
+
+    return `
+      <div class="read-card">
+        <div class="rc-header">${planetTag(pl.k)} How to read ${pl.name} here</div>
+        <div class="read-layer">
+          <span class="rl-num">1</span>
+          <div class="rl-body">
+            <div class="rl-label">Identity — what ${pl.name} is and what it lords</div>
+            <div class="rl-text">${layer1}</div>
+          </div>
+        </div>
+        <div class="read-layer">
+          <span class="rl-num">2</span>
+          <div class="rl-body">
+            <div class="rl-label">Placement — where it sits in your chart</div>
+            <div class="rl-text">${layer2}</div>
+          </div>
+        </div>
+        <div class="read-layer">
+          <span class="rl-num">3</span>
+          <div class="rl-body">
+            <div class="rl-label">Sign relationship — is it comfortable?<span class="rl-tag ${layer3Tone}">${layer3Tone==='good'?'comfortable':layer3Tone==='tough'?'stressed':layer3Tone==='neutral'?'neutral':'workable'}</span></div>
+            <div class="rl-text">${layer3}</div>
+          </div>
+        </div>
+        <div class="read-layer">
+          <span class="rl-num">4</span>
+          <div class="rl-body">
+            <div class="rl-label">Functional nature — friend or foe for your lagna?<span class="rl-tag ${fn.tone}">${fn.label}</span></div>
+            <div class="rl-text">${layer4}</div>
+          </div>
+        </div>
+        <div class="read-layer">
+          <span class="rl-num">5</span>
+          <div class="rl-body">
+            <div class="rl-label">Influences from others</div>
+            <div class="rl-text">${layer5}</div>
+          </div>
+        </div>
+        <div class="read-synth">
+          <div class="rs-label">Putting it together</div>
+          ${synthesis}
+        </div>
+      </div>`;
   }
 
   function renderPlanetToPlanetForOccupant(pk){
@@ -1408,6 +1756,7 @@
         const rPill = rAvail ? `<span class="state-pill retro ${rOn ? '' : 'off'}" data-toggle="retro" data-key="${k}">${rOn ? 'R retro' : 'R add'}</span>` : '';
         const stateRow = (cPill || rPill) ? `<div class="pl-state-row">${cPill}${rPill}</div>` : '';
         const p2p = renderPlanetToPlanetForOccupant(k);
+        const readThis = renderReadThisCard(k, selectedHouse, asc);
         const stateNotes = [];
         if (cOn && combustionNotes[k]) stateNotes.push(`<div class="state-note">When <b>${pl.name}</b> is combust: ${combustionNotes[k]}</div>`);
         if (rOn && retroNotes[k]) stateNotes.push(`<div class="state-note retro">When <b>${pl.name}</b> is retrograde: ${retroNotes[k]}</div>`);
@@ -1415,7 +1764,7 @@
         if (pl.mooltriHouse && selectedHouse === pl.mooltriHouse && !pl.mooltri.includes(nSign.n)) {
           nodeHouseNote = `<div class="pl-text" style="font-size:12px;color:var(--color-text-secondary);"><b>${pl.name}</b> is in its house-mooltrikona (H${pl.mooltriHouse}) — strong placement even though the sign is ${nSign.name}.</div>`;
         }
-        pb += `<div class="planet-row"><div class="pl-name-col"><span class="pl-name">${planetTag(pl.k)}${bh}${pl.name}</span>${stateRow}</div><div class="pl-content"><span class="pl-strength ${st.cls}">${st.tag} in ${nSign.name}</span><div class="pl-text">${pl.karaka}. Here it <b>${pl.effects[0]}</b> the affairs of house ${selectedHouse}, filtered through ${nSign.name}'s ${nSign.element.toLowerCase()} temperament.</div>${nodeHouseNote}${stateNotes.join('')}${p2p}</div></div>`;
+        pb += `<div class="planet-row"><div class="pl-name-col"><span class="pl-name">${planetTag(pl.k)}${bh}${pl.name}</span>${stateRow}</div><div class="pl-content"><span class="pl-strength ${st.cls}">${st.tag} in ${nSign.name}</span><div class="pl-text">${pl.karaka}. Here it <b>${pl.effects[0]}</b> the affairs of house ${selectedHouse}, filtered through ${nSign.name}'s ${nSign.element.toLowerCase()} temperament.</div>${nodeHouseNote}${stateNotes.join('')}${readThis}${p2p}</div></div>`;
       });
     } else pb = '<div class="meta" style="margin-top:14px;">No planets sitting in this house.</div>';
 
@@ -1469,6 +1818,60 @@
     document.getElementById('bhavatSubControls').style.display = viewMode === 'bhavat' ? '' : 'none';
   }
 
+  // Compute which houses have malefic/benefic influence (occupant OR aspect)
+  function getHouseInfluence(hi){
+    const occ = planetsInHouse(hi);
+    const mal = occ.filter(k => malefics.includes(k));
+    const ben = occ.filter(k => benefics.includes(k));
+    let aspectMal = false, aspectBen = false;
+    Object.entries(placements).forEach(([k, fromH]) => {
+      if (fromH === hi) return;
+      const pl = planets.find(p => p.k === k);
+      pl.aspects.forEach(n => {
+        if (targetHouse(fromH, n) === hi) {
+          if (malefics.includes(k)) aspectMal = true;
+          if (benefics.includes(k)) aspectBen = true;
+        }
+      });
+    });
+    return { afflicted: mal.length > 0 || aspectMal, protected: ben.length > 0 || aspectBen };
+  }
+
+  function renderBodyMap(){
+    const regions = document.querySelectorAll('#kpBody .body-region');
+    regions.forEach(r => {
+      const h = parseInt(r.dataset.h, 10);
+      r.classList.remove('selected','afflicted','protected');
+      const inf = getHouseInfluence(h);
+      // afflicted wins over protected for visual clarity, but if both we show afflicted (warning is more important)
+      if (inf.afflicted) r.classList.add('afflicted');
+      else if (inf.protected) r.classList.add('protected');
+      if (h === selectedHouse) r.classList.add('selected');
+    });
+    // Readout panel
+    const data = bodyHealth[selectedHouse];
+    const inf = getHouseInfluence(selectedHouse);
+    let statusHtml = '';
+    if (inf.afflicted) statusHtml = `<div class="br-status"><b>Stress signal:</b> malefic influence on this house. Watch this region more closely.</div>`;
+    else if (inf.protected) statusHtml = `<div class="br-status protected"><b>Helpful signal:</b> benefic influence here. Some natural protection.</div>`;
+    document.getElementById('bodyReadout').innerHTML = `<div class="br-house">House ${selectedHouse} · Body region</div><div class="br-part">${data.body}</div><div>${data.tendencies}</div>${statusHtml}`;
+  }
+
+  // Wire body-region clicks once (only attach on first render)
+  let bodyMapWired = false;
+  function wireBodyMap(){
+    if (bodyMapWired) return;
+    document.querySelectorAll('#kpBody .body-region').forEach(r => {
+      r.addEventListener('click', () => { selectedHouse = parseInt(r.dataset.h, 10); render(); });
+      r.addEventListener('mouseenter', () => {
+        const h = parseInt(r.dataset.h, 10);
+        const data = bodyHealth[h];
+        r.setAttribute('title', `H${h} · ${data.body}`);
+      });
+    });
+    bodyMapWired = true;
+  }
+
   function render(){
     applyViewMode();
     renderLegend();
@@ -1480,6 +1883,8 @@
     renderNative();
     renderGlobalYogas();
     renderReading();
+    renderBodyMap();
+    wireBodyMap();
   }
 
   sel.addEventListener('change', () => { selectedHouse = 1; render(); });
