@@ -430,15 +430,61 @@
   .body-region:hover { fill: rgba(83, 74, 183, 0.18); }
   .body-region.selected { fill: #CECBF6; stroke: var(--color-text-primary); stroke-width: 1.2; }
   .body-region.afflicted { fill: rgba(163, 45, 45, 0.16); }
-  .body-region.afflicted.selected { fill: #CECBF6; }
+  .body-region.afflicted.selected { fill: #CECBF6; stroke: #A32D2D; stroke-width: 1.6; }
   .body-region.protected { fill: rgba(15, 110, 86, 0.12); }
-  .body-region.protected.selected { fill: #CECBF6; }
+  .body-region.protected.selected { fill: #CECBF6; stroke: #0F6E56; stroke-width: 1.6; }
   .body-readout { background: var(--color-background-primary); border-radius: var(--border-radius-md); padding: 12px 14px; font-size: 12.5px; line-height: 1.55; color: var(--color-text-secondary); }
   .body-readout .br-house { font-size: 11px; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 4px; }
   .body-readout .br-part { font-size: 14px; color: var(--color-text-primary); font-weight: 500; margin-bottom: 4px; }
   .body-readout .br-status { margin-top: 8px; padding: 6px 9px; border-radius: 4px; border-left: 2.5px solid #A32D2D; background: rgba(163, 45, 45, 0.06); font-size: 12px; color: var(--color-text-primary); line-height: 1.5; }
   .body-readout .br-status.protected { border-left-color: #0F6E56; background: rgba(15, 110, 86, 0.06); }
   .body-readout .br-status b { font-weight: 500; }
+  .body-influences {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 0.5px solid var(--color-border-tertiary);
+  }
+  .body-influences .bi-title {
+    font-size: 11px;
+    color: var(--color-text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+  .bi-row {
+    display: flex;
+    gap: 10px;
+    padding: 6px 0;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--color-text-secondary);
+  }
+  .bi-row + .bi-row { border-top: 0.5px dashed var(--color-border-tertiary); }
+  .bi-row .bi-tag {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    align-self: flex-start;
+  }
+  .bi-row .bi-body { flex: 1; min-width: 0; color: var(--color-text-primary); }
+  .bi-row .bi-body b { font-weight: 500; }
+  .bi-row .bi-nature {
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 5px;
+    margin-left: 4px;
+    font-weight: 500;
+  }
+  .bi-row .bi-nature.malefic { background: #F7C1C1; color: #501313; }
+  .bi-row .bi-nature.benefic { background: #C0DD97; color: #173404; }
+  .bi-empty {
+    font-size: 12px;
+    color: var(--color-text-tertiary);
+    font-style: italic;
+    padding: 4px 0;
+  }
   .body-legend { display:flex; gap:12px; flex-wrap:wrap; font-size: 11px; color: var(--color-text-secondary); margin-top: 10px; }
   .body-legend .ll-swatch { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: middle; margin-right: 4px; border: 0.5px solid var(--color-border-secondary); }
   .conj-block { background: rgba(83, 74, 183, 0.06); border: 0.5px solid rgba(83, 74, 183, 0.25); border-radius: var(--border-radius-md); padding: 8px 12px; margin-top: 8px; font-size: 12.5px; line-height: 1.55; }
@@ -1843,18 +1889,83 @@
       const h = parseInt(r.dataset.h, 10);
       r.classList.remove('selected','afflicted','protected');
       const inf = getHouseInfluence(h);
-      // afflicted wins over protected for visual clarity, but if both we show afflicted (warning is more important)
       if (inf.afflicted) r.classList.add('afflicted');
       else if (inf.protected) r.classList.add('protected');
       if (h === selectedHouse) r.classList.add('selected');
     });
-    // Readout panel
+
     const data = bodyHealth[selectedHouse];
     const inf = getHouseInfluence(selectedHouse);
+
+    // Top-level status pill
     let statusHtml = '';
-    if (inf.afflicted) statusHtml = `<div class="br-status"><b>Stress signal:</b> malefic influence on this house. Watch this region more closely.</div>`;
+    if (inf.afflicted && inf.protected) statusHtml = `<div class="br-status"><b>Mixed signals:</b> both stressful and helpful influences on this house. Read each below.</div>`;
+    else if (inf.afflicted) statusHtml = `<div class="br-status"><b>Stress signal:</b> malefic influence on this house. Watch this region more closely.</div>`;
     else if (inf.protected) statusHtml = `<div class="br-status protected"><b>Helpful signal:</b> benefic influence here. Some natural protection.</div>`;
-    document.getElementById('bodyReadout').innerHTML = `<div class="br-house">House ${selectedHouse} · Body region</div><div class="br-part">${data.body}</div><div>${data.tendencies}</div>${statusHtml}`;
+
+    // Detailed influences list — every planet that occupies or aspects this house, named
+    const influences = [];
+    // Occupants
+    Object.entries(placements).forEach(([k, fromH]) => {
+      if (fromH !== selectedHouse) return;
+      const pl = planets.find(p => p.k === k);
+      const nature = malefics.includes(k) ? 'malefic' : (benefics.includes(k) ? 'benefic' : 'neutral');
+      const sNum = signFromHouse(fromH, parseInt(sel.value, 10));
+      const st = planetStrength(pl, sNum, fromH);
+      influences.push({k, pl, nature, role:'occupant', n:null, st});
+    });
+    // Aspecters
+    Object.entries(placements).forEach(([k, fromH]) => {
+      if (fromH === selectedHouse) return;
+      const pl = planets.find(p => p.k === k);
+      pl.aspects.forEach(n => {
+        if (targetHouse(fromH, n) === selectedHouse) {
+          const nature = malefics.includes(k) ? 'malefic' : (benefics.includes(k) ? 'benefic' : 'neutral');
+          const sNum = signFromHouse(fromH, parseInt(sel.value, 10));
+          const st = planetStrength(pl, sNum, fromH);
+          influences.push({k, pl, nature, role:'aspecter', fromH, n, st});
+        }
+      });
+    });
+
+    let influencesHtml = '';
+    if (influences.length === 0) {
+      influencesHtml = `<div class="body-influences"><div class="bi-title">Planetary influences on this region</div><div class="bi-empty">No planets sit in or aspect H${selectedHouse}. The body region above expresses according to the house's natural significations only.</div></div>`;
+    } else {
+      let rowsHtml = '';
+      influences.forEach(inf => {
+        const tag = planetTag(inf.k);
+        let action;
+        if (inf.role === 'occupant') {
+          action = `sits in <b>H${selectedHouse}</b>`;
+        } else {
+          action = `aspects from <b>H${inf.fromH}</b> (its ${inf.n}<sup>th</sup>-aspect)`;
+        }
+        // Dignity hint — debilitated malefics are less harmful, exalted ones more impactful
+        let dignityHint = '';
+        if (inf.st.key === 'exalt') dignityHint = ` Exalted, so its effect is amplified.`;
+        else if (inf.st.key === 'debil') dignityHint = inf.nature === 'malefic' ? ` Debilitated, so its harm is reduced.` : ` Debilitated, so its help is weakened.`;
+        else if (inf.st.key === 'own' || inf.st.key === 'mooltri') dignityHint = ` Well-placed, so it acts with full strength.`;
+
+        const meaning = inf.nature === 'malefic'
+          ? `Adds ${inf.pl.aspectFlavor}. Can stress the body region — more so if its dasha is active or transits trigger it.`
+          : inf.nature === 'benefic'
+            ? `Brings ${inf.pl.aspectFlavor}. Protects and supports the body region.`
+            : `${inf.pl.k === 'Ra' ? 'Amplifies and obsesses' : 'Dissolves and detaches'} — adds an unusual quality to this region.`;
+
+        const natureLabel = inf.nature === 'malefic' ? '<span class="bi-nature malefic">malefic</span>'
+          : inf.nature === 'benefic' ? '<span class="bi-nature benefic">benefic</span>'
+          : '';
+
+        rowsHtml += `<div class="bi-row"><span class="bi-tag">${tag}</span><div class="bi-body"><b>${inf.pl.name}</b>${natureLabel} ${action}. ${meaning}${dignityHint}</div></div>`;
+      });
+      influencesHtml = `<div class="body-influences"><div class="bi-title">Planetary influences on H${selectedHouse}</div>${rowsHtml}</div>`;
+    }
+
+    document.getElementById('bodyReadout').innerHTML =
+      `<div class="br-house">House ${selectedHouse} · Body region</div>
+       <div class="br-part">${data.body}</div>
+       <div>${data.tendencies}</div>${statusHtml}${influencesHtml}`;
   }
 
   // Wire body-region clicks once (only attach on first render)
