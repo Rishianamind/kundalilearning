@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title> Kundali Reading Basics — interactive Vedic chart learning tool </title>
-<meta name="description" content="Visualize how to read native's kundali with overlays on the Kal Purush blueprint. Interactive Vedic astrology learning tool with drishti, dispositor chains, and Bhavat Bhavam.">
+<title>Kundali Reading Basics — interactive Vedic chart learning tool</title>
+<meta name="description" content="Visualize how a native's kundali overlays on the Kal Purush blueprint. Interactive Vedic astrology learning tool with drishti, dispositor chains, karakas, yogas, and Bhavat Bhavam.">
 
 <!-- Open Graph -->
-<meta property="og:title" content="Kundali Reading Basics — interactive Vedic chart learning tool">
+<meta property="og:title" content="Kundali Reading Basics — interactive Vedic chart">
 <meta property="og:description" content="See how your kundali maps onto the cosmic blueprint. Learn drishti, dispositors, karakas, yogas, and Bhavat Bhavam interactively.">
 <meta property="og:type" content="website">
 
@@ -262,14 +262,30 @@
   .aspect-line:first-of-type { border-top: none; }
   .aspect-line .planet-tag { display:inline-flex; align-items:center; justify-content:center; min-width:24px; height:20px; padding: 0 6px; border-radius:6px; font-size:11px; font-weight:500; margin-right:6px; vertical-align: middle; color:#fff; }
   .aspect-direction { font-size: 10.5px; padding: 1px 6px; border-radius: 5px; background: var(--color-background-secondary); color: var(--color-text-secondary); margin-right: 6px; font-weight: 500; }
-  .chain-block { padding: 10px 0; font-size: 13px; color: var(--color-text-primary); line-height: 1.6; }
+  .chain-block { padding: 14px 0; font-size: 13px; color: var(--color-text-primary); line-height: 1.6; }
   .chain-block + .chain-block { border-top: 0.5px solid var(--color-border-tertiary); }
-  .chain-flow { display:flex; align-items:center; flex-wrap:wrap; gap:6px; margin: 6px 0 4px; }
+  .chain-header { display:flex; align-items:flex-start; gap:8px; flex-wrap:wrap; margin-bottom: 6px; }
+  .chain-header .chain-title { font-weight: 500; color: var(--color-text-primary); font-size: 14px; display:inline-flex; align-items:center; gap:6px; }
+  .chain-header .chain-sub { font-size: 12px; color: var(--color-text-secondary); width:100%; line-height: 1.5; margin-top: 2px; }
+  .chain-header .chain-sub b { color: var(--color-text-primary); font-weight: 500; }
+  .chain-flow { display:flex; align-items:center; flex-wrap:wrap; gap:6px; margin: 10px 0 4px; }
   .chain-step { display:inline-flex; align-items:center; gap:5px; padding: 4px 8px; border-radius: 8px; background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); font-size: 12px; }
   .chain-step.anchor { background: #E1F5EE; border-color: #5DCAA5; color: #04342C; }
   .chain-arrow { color: var(--color-text-tertiary); font-size: 14px; }
-  .chain-meta { font-size: 12px; color: var(--color-text-secondary); margin-top: 4px; }
+  .hop-list { margin: 8px 0 0; padding: 0; list-style: none; counter-reset: hop; }
+  .hop-list li { padding: 8px 10px 8px 38px; border-left: 2px solid var(--color-border-tertiary); margin: 4px 0; font-size: 12.5px; color: var(--color-text-secondary); line-height: 1.6; position: relative; counter-increment: hop; }
+  .hop-list li::before { content: counter(hop); position: absolute; left: 8px; top: 8px; width: 20px; height: 20px; border-radius: 50%; background: #534AB7; color: #fff; font-size: 10px; font-weight: 500; display: flex; align-items: center; justify-content: center; line-height: 1; }
+  .hop-list li.is-anchor { border-left-color: #5DCAA5; }
+  .hop-list li.is-anchor::before { background: #0F6E56; }
+  .hop-list li.is-terminal { border-left-color: #888780; }
+  .hop-list li.is-terminal::before { background: #5F5E5A; }
+  .hop-list b { color: var(--color-text-primary); font-weight: 500; }
+  .hop-list .hop-pl { display:inline-flex; align-items:center; gap:5px; flex-wrap:wrap; }
+  .chain-meta { font-size: 12.5px; color: var(--color-text-secondary); margin-top: 8px; padding: 8px 10px; background: rgba(83, 74, 183, 0.06); border-left: 2.5px solid #534AB7; border-radius: 4px; line-height: 1.55; }
   .chain-meta b { color: var(--color-text-primary); font-weight: 500; }
+  .chain-meta.anchored { background: rgba(15, 110, 86, 0.08); border-left-color: #0F6E56; }
+  .chain-meta.terminal { background: rgba(95, 94, 90, 0.08); border-left-color: #5F5E5A; }
+  .chain-meta.loop { background: rgba(186, 117, 23, 0.08); border-left-color: #BA7517; }
   .karaka-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 10px 12px; margin-top: 10px; font-size: 12.5px; line-height: 1.55; }
   .karaka-card .kk-row { display:flex; gap:8px; padding: 4px 0; align-items:flex-start; }
   .karaka-card .kk-row + .kk-row { border-top: 0.5px solid var(--color-border-tertiary); }
@@ -302,7 +318,7 @@
 
   <header class="page-header">
     <h1>Kundali Reading Basics</h1>
-    <p>An interactive Vedic astrology learning tool. See how a native's kundali overlays on the Kal Purush blueprint — the cosmic chart where Aries naturally rules H1, Taurus H2, and so on. Pick a lagna, place planets in houses, and watch the chart explain itself.</p>
+    <p>An interactive Vedic astrology learning tool. See how a native's kundali overlays on the Kal Purush blueprint. Pick a lagna, place planets in houses, and watch the chart explain itself.</p>
   </header>
 
   <div class="instructions" id="instructions">
@@ -1054,11 +1070,39 @@
   function renderChainPanel(asc){
     const tgs = (chainTarget && chainTarget !== 'all') ? [chainTarget] : Object.keys(placements);
     if (!tgs.length) return '<div class="meta" style="margin-top:14px;">Place some planets to see dispositor chains.</div>';
+
+    // Helper: which sign numbers does a planet lord?
+    function lordedSigns(planet){
+      const out = [];
+      for (let i=0;i<12;i++) if (signs[i].lord === planet.name) out.push(i+1);
+      return out;
+    }
+    // Helper: phrase planet's lordships in terms of houses for the current chart
+    function lordshipPhrase(planet, ascSign){
+      const ls = lordedSigns(planet);
+      if (!ls.length) return null;
+      const hs = ls.map(sn => 'H' + houseFromSign(sn, ascSign));
+      return hs.join(' and ');
+    }
+    // Helper: describe a sign's flavor in one short phrase
+    function signFlavor(s){
+      return `${s.element.toLowerCase()} and ${s.modality.toLowerCase()} — ${s.qualities.slice(0,2).map(q=>q.toLowerCase()).join(', ')}`;
+    }
+    // Helper: describe a house in one short phrase
+    function houseFlavor(hn){
+      const h = houses[hn-1];
+      const t = h.title.split(' — ')[1] || h.title;
+      return t;
+    }
+
     let html = '';
     tgs.forEach(k => {
       const c = buildDispositorChain(k, asc);
       if (!c.length || !c[0].placed) return;
       const sp = c[0].planet;
+      const isNode = sp.k === 'Ra' || sp.k === 'Ke';
+
+      // Compact flow line (kept from before)
       let fh = '';
       c.forEach((s, i) => {
         if (!s.placed) return;
@@ -1066,11 +1110,85 @@
         fh += `<span class="${cls}">${planetTag(s.planet.k)}<span style="font-weight:500;">H${s.house}</span><span style="color:var(--color-text-secondary);font-size:11px;">${s.sign.name}</span></span>`;
         if (!last) fh += '<span class="chain-arrow">→</span>';
       });
-      const last = c[c.length-1]; let con;
-      if (last && last.isAnchor) con = `Chain ends at <b>${last.planet.name}</b> — anchored in its <b>${last.strength.tag.toLowerCase()}</b> (${last.sign.name}). The whole chain inherits some of this stability.`;
-      else if (last && last.planet && (last.planet.k === 'Ra' || last.planet.k === 'Ke')) con = `Chain reaches the lunar node <b>${last.planet.name}</b> — Rahu/Ketu have no lordships, so the chain terminates here.`;
-      else con = `Chain loops back without reaching an anchor (planets disposing each other in a circle).`;
-      html += `<div class="chain-block"><div style="font-weight:500;color:var(--color-text-primary);">${sp.name}'s journey</div><div class="chain-flow">${fh}</div><div class="chain-meta">${con}</div></div>`;
+
+      // Header sub-text: what the starting planet signifies + what it lords
+      const lordsHere = lordshipPhrase(sp, asc);
+      let headerSub;
+      if (isNode) {
+        headerSub = `${sp.name} signifies <b>${sp.karaka.toLowerCase()}</b>. It has no sign lordship, so its chain terminates immediately wherever it sits.`;
+      } else {
+        headerSub = `${sp.name} rules <b>${sp.karaka.toLowerCase()}</b>${lordsHere ? ` and lords <b>${lordsHere}</b> in your chart` : ''}. We follow it through the chart to find where its affairs ultimately rest.`;
+      }
+
+      // Hop narrative — one rich entry per placed step
+      let hopsHtml = '';
+      const placedHops = c.filter(s => s.placed);
+      placedHops.forEach((s, i) => {
+        const last = i === placedHops.length - 1;
+        const isAnchorHop = last && s.isAnchor;
+        const isTerminalNode = last && (s.planet.k === 'Ra' || s.planet.k === 'Ke') && !s.isAnchor;
+        const liClass = isAnchorHop ? ' class="is-anchor"' : (isTerminalNode ? ' class="is-terminal"' : '');
+
+        const houseTitle = houseFlavor(s.house);
+        const next = placedHops[i+1];
+
+        let body;
+        if (isAnchorHop) {
+          // The chain ends here at a dignified position
+          let anchorReason;
+          if (s.planet.exalt.includes(s.sign.n)) anchorReason = `its <b>exaltation</b> sign`;
+          else if (s.planet.mooltri.includes(s.sign.n)) anchorReason = `its <b>mooltrikona</b> sign`;
+          else if (s.planet.own.includes(s.sign.n)) anchorReason = `its <b>own</b> sign`;
+          else if (s.planet.mooltriHouse && s.house === s.planet.mooltriHouse) anchorReason = `its <b>mooltrikona house</b> (H${s.planet.mooltriHouse})`;
+          else anchorReason = `a dignified position`;
+          body = `<span class="hop-pl">${planetTag(s.planet.k)}<b>${s.planet.name} sits in H${s.house}, in ${s.sign.name} — ${anchorReason}</b></span> — the chain rests. ${s.planet.name} is at full strength here, so the whole journey inherits this stability and ${s.planet.name}'s qualities of <b>${s.planet.karaka.split(',')[0].toLowerCase()}</b>.`;
+        } else if (isTerminalNode) {
+          body = `<span class="hop-pl">${planetTag(s.planet.k)}<b>${s.planet.name} sits in H${s.house}, in ${s.sign.name}</b></span> — H${s.house} governs ${houseTitle}. ${s.sign.name} adds ${signFlavor(s.sign)}. ${s.planet.name} amplifies whatever it touches — here, the themes of this house and sign.`;
+        } else if (next) {
+          // Intermediate hop — routes to next planet
+          const isFirst = i === 0;
+          const intro = isFirst
+            ? `<b>${s.planet.name} sits in H${s.house}, in ${s.sign.name}</b> — the original affairs (${sp.karaka.split(',')[0].toLowerCase()}) live here, in the realm of <b>${houseTitle}</b>`
+            : `the matter is now routed into <b>H${s.house}, in ${s.sign.name}</b> — the realm of <b>${houseTitle}</b>`;
+          const flavor = `${s.sign.name}'s ${signFlavor(s.sign)} flavors the affair`;
+          const route = `${s.sign.name} is ruled by <b>${s.sign.lord}</b>, so the chain hops to ${next.planet.name} next`;
+          body = `<span class="hop-pl">${planetTag(s.planet.k)}${intro}.</span> ${flavor}. ${route}.`;
+        } else {
+          // Last hop but no anchor (chain ran out — lord missing from chart)
+          body = `<span class="hop-pl">${planetTag(s.planet.k)}<b>${s.planet.name} sits in H${s.house}, in ${s.sign.name}</b></span> — this is where the chain runs out. ${s.sign.name} is ruled by <b>${s.sign.lord}</b>, but ${s.sign.lord} isn't placed in this chart, so we can't follow further.`;
+        }
+        hopsHtml += `<li${liClass}>${body}</li>`;
+      });
+
+      // Final summary block — different message per outcome
+      const lastHop = placedHops[placedHops.length-1];
+      let metaClass = '', metaText = '';
+      if (lastHop && lastHop.isAnchor) {
+        metaClass = ' anchored';
+        const what = sp.karaka.split(',').slice(0,2).join(',').toLowerCase();
+        const housePath = placedHops.map(s => `H${s.house}`).join(' → ');
+        metaText = `<b>Reading the whole story:</b> ${sp.name}'s affairs (${what}) travel ${housePath}, finally anchoring at <b>${lastHop.planet.name}</b> in ${lastHop.sign.name}. <b>The destination is dignified</b> — these themes have a strong, settled resting place. They carry ${lastHop.planet.name}-in-${lastHop.sign.name} flavor: ${lastHop.planet.karaka.split(',').slice(0,2).join(',').toLowerCase()}, tinted by ${lastHop.sign.qualities.slice(0,2).map(q=>q.toLowerCase()).join(' and ')}.`;
+      } else if (lastHop && (lastHop.planet.k === 'Ra' || lastHop.planet.k === 'Ke')) {
+        metaClass = ' terminal';
+        metaText = `<b>Why it stops here:</b> ${lastHop.planet.name} (and ${lastHop.planet.k === 'Ra' ? 'Ketu' : 'Rahu'}) are lunar nodes — they rule no signs, so they can't pass affairs along to a sign-lord. The chain ends at the node itself. The significations stay focused on whatever H${lastHop.house}/${lastHop.sign.name} stirs up.`;
+      } else if (placedHops.length >= 2 && placedHops.length < c.length) {
+        // Cycle: buildDispositorChain stops when it revisits, and the chain still has unvisited entries... actually our builder uses `visited`, so a cycle simply doesn't extend. Detect cycle when the unique-step list is shorter than would-be next.
+        metaClass = ' loop';
+        metaText = `<b>The chain loops:</b> ${sp.name}'s journey ends without reaching a dignified anchor — the planets dispose each other in a circle. The affairs of ${sp.name} don't have a single stable resting place; they keep circulating between these positions.`;
+      } else {
+        metaClass = ' loop';
+        metaText = `<b>Chain incomplete:</b> the next sign-lord isn't placed in this chart, so we can't follow further. Place more planets to extend the chain.`;
+      }
+
+      html += `<div class="chain-block">
+        <div class="chain-header">
+          <span class="chain-title">${planetTag(sp.k)} ${sp.name}'s journey</span>
+          <div class="chain-sub">${headerSub}</div>
+        </div>
+        <div class="chain-flow">${fh}</div>
+        <ul class="hop-list">${hopsHtml}</ul>
+        <div class="chain-meta${metaClass}">${metaText}</div>
+      </div>`;
     });
     return html || '<div class="meta" style="margin-top:14px;">No chains to show.</div>';
   }
