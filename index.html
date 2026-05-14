@@ -292,6 +292,47 @@
   .karaka-card .kk-name { font-weight:500; color: var(--color-text-primary); display:inline-flex; align-items:center; gap:5px; min-width: 96px; }
   .karaka-card .kk-text { color: var(--color-text-secondary); flex: 1; }
   .karaka-card .kk-text b { color: var(--color-text-primary); font-weight:500; }
+  .body-card {
+    margin-top: 14px;
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-md);
+    padding: 10px 12px;
+    font-size: 12.5px;
+    line-height: 1.55;
+  }
+  .body-row { display:flex; gap:8px; padding: 4px 0; }
+  .body-row + .body-row { border-top: 0.5px solid var(--color-border-tertiary); }
+  .body-row .br-label {
+    color: var(--color-text-secondary);
+    min-width: 92px;
+    flex-shrink: 0;
+    font-size: 11.5px;
+  }
+  .body-row .br-text { color: var(--color-text-primary); flex: 1; }
+  .body-row .br-text b { font-weight: 500; }
+  .health-alert {
+    margin-top: 6px;
+    padding: 6px 10px;
+    font-size: 12px;
+    line-height: 1.55;
+    border-radius: 4px;
+    border-left: 2.5px solid #A32D2D;
+    background: rgba(163, 45, 45, 0.06);
+    color: var(--color-text-primary);
+  }
+  .health-alert.protective {
+    border-left-color: #0F6E56;
+    background: rgba(15, 110, 86, 0.06);
+  }
+  .health-alert b { font-weight: 500; }
+  .health-disclaimer {
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--color-text-tertiary);
+    line-height: 1.5;
+    font-style: italic;
+  }
   .conj-block { background: rgba(83, 74, 183, 0.06); border: 0.5px solid rgba(83, 74, 183, 0.25); border-radius: var(--border-radius-md); padding: 8px 12px; margin-top: 8px; font-size: 12.5px; line-height: 1.55; }
   .conj-block + .conj-block { margin-top: 6px; }
   .conj-block .cb-title { display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-weight:500; color: var(--color-text-primary); }
@@ -467,6 +508,23 @@
     { n:11,title:'Labha — gains & friends',themes:['Income','Friends & network','Elder siblings','Fulfilled desires'],karakas:[{p:'Ju',for:'gains, fulfilled desires'}]},
     { n:12,title:'Vyaya — loss & moksha',themes:['Expenses','Foreign lands','Sleep & bed','Liberation'],karakas:[{p:'Sa',for:'losses, separation, isolation'},{p:'Ke',for:'moksha, liberation'}]}
   ];
+  const bodyHealth = {
+    1:{body:'Head, face, brain, hair, complexion',systems:'Overall vitality (ojas), nervous system, immune strength, body constitution',tendencies:'Headaches, migraines, neurological issues, low immunity, hair loss, skin disorders. The 1st sets the baseline strength of the entire body — a strong lagna means strong everything.'},
+    2:{body:'Face, right eye, mouth, teeth, tongue, throat, vocal cords',systems:'Speech mechanism, taste, swallowing, salivary glands, thyroid (some traditions)',tendencies:'Dental decay, gum disease, throat infections, voice disorders (stammering, hoarseness), right-eye problems, food-related diseases, obesity from overeating. Strong link to <b>food choices and what enters the body</b>.'},
+    3:{body:'Arms, shoulders, hands, upper chest, lungs (right side), right ear, throat (lower)',systems:'Motor coordination, respiration, hearing (right ear), prana-vata (life-force movement)',tendencies:'Arm/shoulder injuries, frozen shoulder, repetitive strain, asthma, bronchitis, right-ear hearing loss. Mars-related house, so accidents/wounds to upper limbs are common when afflicted.'},
+    4:{body:'Chest, heart, breasts, lungs, ribcage, upper back',systems:'Cardiovascular, respiratory, emotional-psychosomatic axis (Moon karaka)',tendencies:'Heart disease, hypertension, palpitations, asthma, chronic anxiety, breast issues/cancer, pleurisy. Because Moon (mind) co-rules this house, <b>emotional stress shows up as cardiac/respiratory symptoms</b>.'},
+    5:{body:'Upper abdomen, stomach, liver, gallbladder, pancreas, upper spine',systems:'Digestion (jathar-agni), metabolism, blood sugar, reproductive potency (creative seed)',tendencies:'Liver dysfunction, jaundice, fatty liver, indigestion, ulcers, diabetes, miscarriage, fertility issues, mental dullness (intelligence is 5th-house karaka — afflicted = poor focus/learning issues).'},
+    6:{body:'Lower abdomen, small intestine, large intestine (partly), kidneys, navel region',systems:'Digestion (lower), immune (gut microbiome), urinary, lymphatic',tendencies:'<b>The disease house par excellence.</b> Chronic illness, gut disorders (IBS, IBD), food allergies, kidney stones, urinary infections, parasitic infections, accidents requiring stitches/hospitalization, autoimmunity. Strong 6th = strong immunity to fight disease; afflicted 6th = chronic ailments.'},
+    7:{body:'Lower belly, pelvis, prostate, uterus, ovaries, kidneys (lower pole)',systems:'Reproductive (lower), urinary (bladder), endocrine (pelvic glands)',tendencies:'Diabetes (sweetness/Venus connection), reproductive disorders, prostate issues, uterine problems, kidney stones, sexual dysfunction, STDs (when also linked to 8th/12th). Venus-ruled house — afflicted Venus brings <b>diabetes and sugar metabolism issues</b>.'},
+    8:{body:'Genitals, anus, external reproductive organs, perineum, excretory organs',systems:'Excretion, longevity (ayur), chronic/hidden processes, surgical interventions',tendencies:'<b>The house of chronic, hidden, and life-threatening conditions.</b> Cancer, surgeries, accidents requiring hospitalization, hemorrhoids, fistulas, STDs, chronic urinary issues, mental illness (hidden), suicidal tendencies. Also the house of <b>longevity</b> — its strength determines lifespan. Saturn here = chronic but long life; malefics afflicting = sudden events.'},
+    9:{body:'Hips, thighs, upper legs, hip joints, femur, arteries (femoral)',systems:'Arterial circulation, hip mobility, fat metabolism (Jupiter karaka), sciatic nerve',tendencies:'Hip fractures, sciatica, thigh injuries, varicose veins, high cholesterol, obesity in the lower body, arthritis of the hip. Jupiter co-rules this house — afflicted = <b>weight gain, fatty deposits, lipid disorders</b>.'},
+    10:{body:'Knees, kneecaps, knee joints, skeletal frame (broadly)',systems:'Skeletal-joint system, weight-bearing structure, bones',tendencies:'Knee pain/injuries, arthritis (osteo + rheumatoid), joint stiffness, gout, posture-related back pain, ligament tears. Saturn-ruled house — <b>aging-related joint deterioration</b>. Karma-related accidents to legs/knees.'},
+    11:{body:'Calves, shins, ankles (upper), left ear, lower-leg circulation',systems:'Lower-leg vascular system, hearing (left ear)',tendencies:'Calf cramps, varicose veins, deep-vein thrombosis, shin splints, ankle injuries, left-ear hearing loss/tinnitus, lower-leg edema. Less commonly afflicted than other houses but watch when Saturn/Rahu sit here.'},
+    12:{body:'Feet, toes, left eye, lymphatic system (some traditions)',systems:'Sleep, unconscious mind, immune suppression, lymphatic drainage, surrender of the body (death/moksha)',tendencies:'<b>Foot problems, left-eye issues (cataract, retinal), insomnia, sleep disorders, mental illness (depression, psychosis, addictions), hospitalization, surgery, paralysis, coma.</b> 12th is the house of <b>bed</b> — sleep quality, hospital stays, and the final lying down. Strong 12th = good sleep, healthy detachment; afflicted = isolation, addictions, mental health crises.'}
+  };
+  // Classical malefic/benefic groupings used for the health-alert layer
+  const malefics = ['Sa','Ma','Ra','Ke','Su'];
+  const benefics = ['Ju','Ve','Mo','Me']; // Mercury is conditional but treat as benefic by default
   const bhavatPersons = {
     1:{who:'Yourself',desc:'this is the default chart'},
     2:{who:'Family / your wealth',desc:'derived houses describe matters of family or money'},
@@ -1215,6 +1273,46 @@
     return `<div class="section-title">Karakas — natural significators</div><div style="font-size:11.5px;color:var(--color-text-tertiary);margin: 2px 0 4px;">Read each topic through both the lord and these karakas.</div><div class="karaka-card">${rh}</div>`;
   }
 
+  function renderBodyHealthCard(hi, asc){
+    const data = bodyHealth[hi];
+    if (!data) return '';
+    // Detect malefic/benefic presence in this house
+    const occ = planetsInHouse(hi);
+    const mal = occ.filter(k => malefics.includes(k));
+    const ben = occ.filter(k => benefics.includes(k));
+    // Also detect malefic aspects landing on this house (drishti)
+    const aspectingMalefics = [];
+    Object.entries(placements).forEach(([k, fromH]) => {
+      if (!malefics.includes(k)) return;
+      if (fromH === hi) return; // already occupant
+      const pl = planets.find(p => p.k === k);
+      pl.aspects.forEach(n => { if (targetHouse(fromH, n) === hi) aspectingMalefics.push({k, n, fromH}); });
+    });
+    const aspectingBenefics = [];
+    Object.entries(placements).forEach(([k, fromH]) => {
+      if (!benefics.includes(k)) return;
+      if (fromH === hi) return;
+      const pl = planets.find(p => p.k === k);
+      pl.aspects.forEach(n => { if (targetHouse(fromH, n) === hi) aspectingBenefics.push({k, n, fromH}); });
+    });
+
+    let alerts = '';
+    if (mal.length || aspectingMalefics.length) {
+      const occText = mal.length ? `${mal.map(k=>planetTag(k)).join(' ')} sitting here` : '';
+      const aspText = aspectingMalefics.length ? `${aspectingMalefics.map(a=>planetTag(a.k)).join(' ')} aspecting from elsewhere` : '';
+      const both = [occText, aspText].filter(Boolean).join(' and ');
+      alerts += `<div class="health-alert"><b>Affliction signal:</b> malefic influence on this house — ${both}. Classical reading: the body part and disease tendencies above become <b>more active</b>. Watch especially for the patterns listed; chronic forms become more likely if Saturn is involved, sudden forms if Mars/Rahu.</div>`;
+    }
+    if (ben.length || aspectingBenefics.length) {
+      const occText = ben.length ? `${ben.map(k=>planetTag(k)).join(' ')} sitting here` : '';
+      const aspText = aspectingBenefics.length ? `${aspectingBenefics.map(a=>planetTag(a.k)).join(' ')} aspecting from elsewhere` : '';
+      const both = [occText, aspText].filter(Boolean).join(' and ');
+      alerts += `<div class="health-alert protective"><b>Protective signal:</b> benefic influence — ${both}. Classical reading: <b>some shielding</b> for the body part above. Jupiter is the strongest healer; Venus and a strong Moon also protect; Mercury helps when not combust.</div>`;
+    }
+
+    return `<div class="section-title">Body & health (kalapurusha)</div><div style="font-size:11.5px;color:var(--color-text-tertiary);margin: 2px 0 4px;">House 6, 8, and 12 (dusthanas) are the main disease houses; afflictions to any house show in the body parts below.</div><div class="body-card"><div class="body-row"><span class="br-label">Body part</span><span class="br-text"><b>${data.body}</b></span></div><div class="body-row"><span class="br-label">Systems</span><span class="br-text">${data.systems}</span></div><div class="body-row"><span class="br-label">Tendencies</span><span class="br-text">${data.tendencies}</span></div>${alerts}</div><div class="health-disclaimer">Classical reference for study only — real health concerns need real doctors, not charts.</div>`;
+  }
+
   function renderPlanetToPlanetForOccupant(pk){
     const rels = getRelationsFor(pk); const all = planetToPlanetAspects(); const blocks = [];
     rels.conjunctions.forEach(c => {
@@ -1322,6 +1420,7 @@
     } else pb = '<div class="meta" style="margin-top:14px;">No planets sitting in this house.</div>';
 
     const kk = renderKarakaCard(selectedHouse, asc);
+    const bhc = renderBodyHealthCard(selectedHouse, asc);
 
     let extras = '';
     if (viewMode === 'drishti') {
@@ -1345,7 +1444,7 @@
     const lk = nSign.lord.slice(0, 2), lh = placements[lk];
     const ll = lh ? `Sign lord to study: <b>${nSign.lord}</b> — placed by you in H${lh}.` : `Sign lord to study: <b>${nSign.lord}</b> — wherever it sits, that house also affects these matters.`;
 
-    const cp = `<div class="panel center"><h3>House ${selectedHouse}${viewMode==='bhavat' ? ` · B${bhavatHouseNumber(selectedHouse, bhavatBase)} from H${bhavatBase}` : ''}</h3><div class="titleline">${house.title}</div><div class="meta" style="margin-top:0;">Natural significations</div><ul>${house.themes.map(t => `<li>${t}</li>`).join('')}</ul><div class="blend-headline" style="margin-top:14px;">${blend}</div><div class="meta">${ll}</div>${bbHint}${pb}${kk}${extras}</div>`;
+    const cp = `<div class="panel center"><h3>House ${selectedHouse}${viewMode==='bhavat' ? ` · B${bhavatHouseNumber(selectedHouse, bhavatBase)} from H${bhavatBase}` : ''}</h3><div class="titleline">${house.title}</div><div class="meta" style="margin-top:0;">Natural significations</div><ul>${house.themes.map(t => `<li>${t}</li>`).join('')}</ul><div class="blend-headline" style="margin-top:14px;">${blend}</div><div class="meta">${ll}</div>${bbHint}${pb}${kk}${bhc}${extras}</div>`;
     const kp = signPanel(`Kal Purush natural rashi`, kpSign, elementColor(kpSign.element), elementTextColor(kpSign.element));
     const np = signPanel(`Your H${selectedHouse}`, nSign, same ? '#9FE1CB' : elementColor(nSign.element), same ? '#04342C' : elementTextColor(nSign.element));
     document.getElementById('reading').innerHTML = kp + cp + np;
